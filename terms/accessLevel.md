@@ -1,7 +1,7 @@
 # accessLevel
 
 **IRI:**  
-`https://iroko-framework.github.io/iroko-framework-ewe/terms/accessLevel`
+`https://iroko-framework.github.io/iroko-ewe-module/terms/accessLevel`
 
 ## Definition
 Governance designation indicating the disclosure level for culturally sensitive fields.
