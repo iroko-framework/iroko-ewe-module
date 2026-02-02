@@ -31,4 +31,4 @@ For citation and reproducibility, always reference the tagged release.
 - Core properties: `accessLevel`, `ritualContext`
 - Minimal documentation
 
-**Download:** [ewe-v0.1.0.ttl](https://github.com/iroko-framework/iroko-framework-ewe/releases/tag/v0.1.0)
+**Download:** [ewe-v0.1.0.ttl](https://github.com/iroko-framework/iroko-ewe-module/releases/tag/v0.1.0)
