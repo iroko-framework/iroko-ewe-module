@@ -20,6 +20,10 @@ This repository is a working module within the broader Iroko Framework and is in
 
 For citation and reproducibility, always reference the tagged release.
 
+## How to use this module
+- Browse term pages to understand how Ewé concepts are modeled.
+- Use the Turtle vocabulary as a reference or template for related datasets.
+- Cite the tagged release when referencing this work in publications or projects.
 
 ## Namespace (draft)
 Terms are published under:
