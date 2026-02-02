@@ -1,4 +1,4 @@
-# Plant
+# plant
 
 **IRI:** `https://iroko-framework.github.io/iroko-framework-ewe/terms/plant`
 
