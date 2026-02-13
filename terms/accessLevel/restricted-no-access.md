@@ -1,7 +1,7 @@
 # restricted
 
 **IRI**  
-https://iroko-framework.github.io/iroko-ewe-module/terms/restricted
+http://iroko-framework.github.io/iroko-ewe-module/terms/accessLevel/restricted-no-access.md
 
 **Definition**  
 Culturally sensitive context; non-operational and not published beyond approved contexts.
