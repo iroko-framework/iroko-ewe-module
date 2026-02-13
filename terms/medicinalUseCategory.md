@@ -1,6 +1,6 @@
 # Medicinal Uses
 
-**IRI:** `https://iroko-framework.github.io/iroko-ewe-module/terms/medicinalUses`
+**IRI:** `http://iroko-framework.github.io/iroko-ewe-module/terms/medicinalUseCategory`
 
 High-level medicinal use description.
 
