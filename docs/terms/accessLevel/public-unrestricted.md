@@ -7,7 +7,10 @@ https://iroko-framework.github.io/iroko-ewe-module/terms/accessLevel/public-unre
 skos:Concept
 
 **In scheme:**  
-https://iroko-framework.github.io/iroko-ewe-module/terms/accessLevel/
+https://iroko-framework.github.io/iroko-ewe-module/terms/accessLevel
+
+**Preferred label:**
+Public - Unrestricted
 
 ---
 
