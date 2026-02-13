@@ -1,7 +1,7 @@
 # open
 
 **IRI**  
-https://iroko-framework.github.io/iroko-ewe-module/terms/open
+https://iroko-framework.github.io/iroko-ewe-module/terms/accessLevel/public-no-amplification.md
 
 **Definition**  
 Open and public information.
