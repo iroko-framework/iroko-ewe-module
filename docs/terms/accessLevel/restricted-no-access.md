@@ -23,3 +23,7 @@ Not to be disclosed or published in this dataset.
 ## Scope note
 
 Use this level when inclusion would create operational risk, violate community protocols,
+
+---
+
+← [Back to vocabulary index](/iroko-ewe-module/)
