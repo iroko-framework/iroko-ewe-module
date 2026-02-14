@@ -1,1 +1,0 @@
-# cosmological-or-symbolic-association
