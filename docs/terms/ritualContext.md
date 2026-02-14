@@ -1,24 +1,56 @@
-# ritualContext
+# Ritual Context
 
 **IRI:**  
-`https://iroko-framework.github.io/iroko-ewe-module/terms/ritualContext`
+https://iroko-framework.github.io/iroko-ewe-module/terms/ritualContext
+
+**Type:**  
+owl:DatatypeProperty
+
+**Preferred label:**  
+Ritual context
+
+---
 
 ## Definition
-High-level symbolic or ritual context associated with a plant, expressed without procedural detail.
+
+High-level narrative description of ritual or symbolic context associated with a plant record.
+
+---
+
+## Scope note
+
+This field captures structured, non-operational contextual description. Procedural instructions, recipes, and step-by-step ritual methods are intentionally excluded. Disclosure of this field is governed by `accessLevel`.
+
+---
 
 ## Expected syntax
+
 Values should follow a controlled mini-syntax using key–value pairs separated by pipes (`|`).
 
-**Expected keys**
+---
+
+## Expected keys
+
 - `purpose:` (recommended)
 - `timing:` (optional)
 - `context:` (optional)
 - `parts:` (optional)
 
-**Example**
+Each key should appear at most once per value string.
+
+---
+
+## Example
+
 `purpose: fertility | parts: whole tree, roots`
 
-## Notes
-Disclosure of this field is governed by `accessLevel`. Procedural instructions, recipes, and step-by-step ritual methods are intentionally excluded.
+---
 
-[← Back to vocabulary index](../index.html)
+## Version
+
+Introduced in v0.2.0
+
+---
+
+← [Back to vocabulary index](https://iroko-framework.github.io/iroko-ewe-module/)
+
