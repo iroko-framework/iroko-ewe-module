@@ -1,7 +1,7 @@
 # Offering and Devotion
 
 **IRI:**  
-https://iroko-framework.github.io/iroko-ewe-module/terms/ritualUse/offering-devotion
+https://iroko-framework.github.io/iroko-ewe-module/terms/ritualUse/offering-and-devotion
 
 **Type:**  
 skos:Concept
