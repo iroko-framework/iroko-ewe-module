@@ -1,7 +1,7 @@
 # Skin and Topical Use
 
 **IRI:**  
-https://iroko-framework.github.io/iroko-ewe-module/terms/medicinalUse/skin-topical-use
+https://iroko-framework.github.io/iroko-ewe-module/terms/medicinalUse/skin-and-topical-use
 
 **Type:**  
 skos:Concept
