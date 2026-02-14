@@ -1,7 +1,7 @@
 # Healing and Restoration
 
 **IRI:**  
-https://iroko-framework.github.io/iroko-ewe-module/terms/ritualUse/healing-restoration
+https://iroko-framework.github.io/iroko-ewe-module/terms/ritualUse/healing-and-restoration
 
 **Type:**  
 skos:Concept
