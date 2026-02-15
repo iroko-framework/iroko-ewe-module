@@ -57,6 +57,56 @@ iroko:Plant a rdfs:Class ;
     rdfs:isDefinedBy <https://iroko-framework.github.io/iroko-ewe-module/vocab/iroko-ewe-module.ttl> .
 
 ####################################################################################################
+# Properties: Object Properties (link Plant entities to controlled SKOS concepts)
+####################################################################################################
+
+iroko:accessLevel a owl:ObjectProperty ;
+    rdfs:label "Access Level"@en ;
+    rdfs:comment "Links a plant record to its governance and disclosure classification within the Access Level concept scheme."@en ;
+    rdfs:domain iroko:Plant ;
+    rdfs:range skos:Concept ;
+    rdfs:isDefinedBy <https://iroko-framework.github.io/iroko-ewe-module/vocab/iroko-ewe-module.ttl> .
+
+iroko:medicinalUse a owl:ObjectProperty ;
+    rdfs:label "Medicinal Use"@en ;
+    rdfs:comment "Links a plant record to one or more high-level medicinal use categories within the Medicinal Use concept scheme."@en ;
+    rdfs:domain iroko:Plant ;
+    rdfs:range skos:Concept ;
+    rdfs:isDefinedBy <https://iroko-framework.github.io/iroko-ewe-module/vocab/iroko-ewe-module.ttl> .
+
+iroko:ritualUse a owl:ObjectProperty ;
+    rdfs:label "Ritual Use"@en ;
+    rdfs:comment "Links a plant record to one or more high-level ritual use categories within the Ritual Use concept scheme."@en ;
+    rdfs:domain iroko:Plant ;
+    rdfs:range skos:Concept ;
+    rdfs:isDefinedBy <https://iroko-framework.github.io/iroko-ewe-module/vocab/iroko-ewe-module.ttl> .
+
+####################################################################################################
+# Properties: Datatype Properties (literal-valued attributes of Plant entities)
+####################################################################################################
+
+iroko:ritualContext a owl:DatatypeProperty ;
+    rdfs:label "Ritual Context"@en ;
+    rdfs:comment "Free-text narrative describing ritual significance. Content governed by iroko:accessLevel — do not serialize for records classified above Public - No Amplification without custodial review."@en ;
+    rdfs:domain iroko:Plant ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy <https://iroko-framework.github.io/iroko-ewe-module/vocab/iroko-ewe-module.ttl> .
+
+iroko:nameCollision a owl:DatatypeProperty ;
+    rdfs:label "Name Collision"@en ;
+    rdfs:comment "Boolean flag indicating whether this plant shares a vernacular name with another species in the dataset, creating potential ambiguity."@en ;
+    rdfs:domain iroko:Plant ;
+    rdfs:range xsd:boolean ;
+    rdfs:isDefinedBy <https://iroko-framework.github.io/iroko-ewe-module/vocab/iroko-ewe-module.ttl> .
+
+iroko:collisionNotes a owl:DatatypeProperty ;
+    rdfs:label "Collision Notes"@en ;
+    rdfs:comment "Free-text explanation of a name collision, identifying the conflicting species and the basis for disambiguation."@en ;
+    rdfs:domain iroko:Plant ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy <https://iroko-framework.github.io/iroko-ewe-module/vocab/iroko-ewe-module.ttl> .
+
+####################################################################################################
 # SKOS Concept Scheme: Access Level
 ####################################################################################################
 
