@@ -9,7 +9,7 @@ This module demonstrates how structured vocabularies can support Afro-Atlantic a
 
 ## Status
 
-- **Stable release:** v0.2.0  
+- **Stable release:** v0.2.1  
 - **Development branch:** `main`  
 - **Scope:** Ethnobotanical concepts, naming variation, medicinal use classification, ritual use classification, and access governance  
 - **Audience:** Archivists, digital humanists, linked data practitioners, and collaborators exploring non-extractive knowledge modeling  
