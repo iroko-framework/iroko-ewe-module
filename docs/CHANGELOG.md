@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.1] — 2026-02-15
+
+### Added
+- Declared six module properties previously referenced in mapping documentation but absent from TTL:
+  - `iroko:accessLevel` (ObjectProperty)
+  - `iroko:medicinalUse` (ObjectProperty)
+  - `iroko:ritualUse` (ObjectProperty)
+  - `iroko:ritualContext` (DatatypeProperty)
+  - `iroko:nameCollision` (DatatypeProperty)
+  - `iroko:collisionNotes` (DatatypeProperty)
+- All properties include `rdfs:domain`, `rdfs:range`, `rdfs:label`, `rdfs:comment`, and `rdfs:isDefinedBy`
+
+### Changed
+- Updated `owl:versionInfo` from "0.2.0" to "0.2.1"
+- Added `dcterms:modified "2026-02-15"^^xsd:date` to ontology metadata
+
+--- 
+
 ## [0.2.0] - 2026-02-11
 
 ### Added
