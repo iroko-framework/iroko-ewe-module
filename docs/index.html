@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iroko Framework: Ewé Module</title>
+
+  <style>
+    :root{
+      --ihs-cream: #fdf5de;
+      --ihs-green: #395724;
+      --ihs-green-2: #405030;
+      --ihs-dark: #203014;
+      --ihs-gold: #d4a574;
+      --ink: #1f2937;
+      --muted: #4b5563;
+      --bg: var(--ihs-cream);
+      --card: #ffffff;
+      --border: rgba(48,64,32,0.18);
+      --code-bg: #f5f5f5;
+    }
+
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--ink);
+      background: var(--bg);
+      padding: 20px;
+    }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ─── Language toggle mechanism ─── */
+    [data-i18n]{ display: none; }
+    [data-i18n="en"]{ display: inline; }   /* default */
+
+    body[data-lang="en"] [data-i18n="en"]{ display: inline; }
+    body[data-lang="en"] [data-i18n="es"],
+    body[data-lang="en"] [data-i18n="fr"],
+    body[data-lang="en"] [data-i18n="pt"],
+    body[data-lang="en"] [data-i18n="yo"]{ display: none; }
+
+    body[data-lang="es"] [data-i18n="es"]{ display: inline; }
+    body[data-lang="es"] [data-i18n="en"],
+    body[data-lang="es"] [data-i18n="fr"],
+    body[data-lang="es"] [data-i18n="pt"],
+    body[data-lang="es"] [data-i18n="yo"]{ display: none; }
+
+    body[data-lang="fr"] [data-i18n="fr"]{ display: inline; }
+    body[data-lang="fr"] [data-i18n="en"],
+    body[data-lang="fr"] [data-i18n="es"],
+    body[data-lang="fr"] [data-i18n="pt"],
+    body[data-lang="fr"] [data-i18n="yo"]{ display: none; }
+
+    body[data-lang="pt"] [data-i18n="pt"]{ display: inline; }
+    body[data-lang="pt"] [data-i18n="en"],
+    body[data-lang="pt"] [data-i18n="es"],
+    body[data-lang="pt"] [data-i18n="fr"],
+    body[data-lang="pt"] [data-i18n="yo"]{ display: none; }
+
+    body[data-lang="yo"] [data-i18n="yo"]{ display: inline; }
+    body[data-lang="yo"] [data-i18n="en"],
+    body[data-lang="yo"] [data-i18n="es"],
+    body[data-lang="yo"] [data-i18n="fr"],
+    body[data-lang="yo"] [data-i18n="pt"]{ display: none; }
+
+    /* block-level i18n spans */
+    .i18n-block[data-i18n]{ display: none; }
+    .i18n-block[data-i18n="en"]{ display: block; }
+
+    body[data-lang="en"] .i18n-block[data-i18n="en"]{ display: block; }
+    body[data-lang="en"] .i18n-block[data-i18n="es"],
+    body[data-lang="en"] .i18n-block[data-i18n="fr"],
+    body[data-lang="en"] .i18n-block[data-i18n="pt"],
+    body[data-lang="en"] .i18n-block[data-i18n="yo"]{ display: none; }
+
+    body[data-lang="es"] .i18n-block[data-i18n="es"]{ display: block; }
+    body[data-lang="es"] .i18n-block[data-i18n="en"],
+    body[data-lang="es"] .i18n-block[data-i18n="fr"],
+    body[data-lang="es"] .i18n-block[data-i18n="pt"],
+    body[data-lang="es"] .i18n-block[data-i18n="yo"]{ display: none; }
+
+    body[data-lang="fr"] .i18n-block[data-i18n="fr"]{ display: block; }
+    body[data-lang="fr"] .i18n-block[data-i18n="en"],
+    body[data-lang="fr"] .i18n-block[data-i18n="es"],
+    body[data-lang="fr"] .i18n-block[data-i18n="pt"],
+    body[data-lang="fr"] .i18n-block[data-i18n="yo"]{ display: none; }
+
+    body[data-lang="pt"] .i18n-block[data-i18n="pt"]{ display: block; }
+    body[data-lang="pt"] .i18n-block[data-i18n="en"],
+    body[data-lang="pt"] .i18n-block[data-i18n="es"],
+    body[data-lang="pt"] .i18n-block[data-i18n="fr"],
+    body[data-lang="pt"] .i18n-block[data-i18n="yo"]{ display: none; }
+
+    body[data-lang="yo"] .i18n-block[data-i18n="yo"]{ display: block; }
+    body[data-lang="yo"] .i18n-block[data-i18n="en"],
+    body[data-lang="yo"] .i18n-block[data-i18n="es"],
+    body[data-lang="yo"] .i18n-block[data-i18n="fr"],
+    body[data-lang="yo"] .i18n-block[data-i18n="pt"]{ display: none; }
+
+    /* Language switcher bar */
+    .lang-bar{
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-top: 0.85rem;
+    }
+
+    .lang-btn{
+      padding: 0.3rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid rgba(48,64,32,0.3);
+      background: transparent;
+      color: var(--ihs-green);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .lang-btn:hover{
+      background: rgba(48,64,32,0.08);
+    }
+
+    .lang-btn.active{
+      background: var(--ihs-green);
+      color: #fff;
+      border-color: var(--ihs-green);
+    }
+
+    /* ─── Original styles preserved ─── */
+    header{
+      background: linear-gradient(135deg, #F0F0D0 0%, #F6F6DE 55%, #F0F0D0 100%);
+      color: var(--ihs-green);
+      padding: 2rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.08);
+    }
+
+    .brand{
+      display:flex;
+      gap:1.25rem;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+
+    .brand-logo{
+      width: 108px;
+      height: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .brand-text h1{
+      color: var(--ihs-green);
+      font-size: 2rem;
+    }
+
+    .brand-text .subtitle{
+      color: var(--ihs-green-2);
+      margin: 0.5rem 0;
+    }
+
+    .badge{
+      display: inline-block;
+      background: rgba(48,64,32,0.10);
+      border: 1px solid rgba(48,64,32,0.22);
+      color: var(--ihs-green);
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    main{
+      background: var(--card);
+      margin-top: 1.5rem;
+      padding: 2rem;
+      border-radius: 14px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+    }
+
+    section{ margin-bottom: 2.5rem; }
+
+    h2{
+      color: var(--ihs-green);
+      border-bottom: 3px solid var(--ihs-gold);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+    }
+
+    h3{
+      color: var(--ihs-green);
+      margin: 1.5rem 0 0.75rem 0;
+      font-size: 1.1rem;
+    }
+
+    h4{
+      color: var(--ihs-green);
+      font-size: 0.95rem;
+      margin: 1rem 0 0.5rem 0;
+    }
+
+    p{ margin-bottom: 0.75rem; }
+
+    .alert{
+      background: #fff7df;
+      border-left: 5px solid var(--ihs-gold);
+      padding: 1rem;
+      border-radius: 10px;
+      margin: 1rem 0;
+    }
+
+    .alert-success{
+      background: #d4edda;
+      border-left-color: #28a745;
+    }
+
+    .info-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card{
+      background: #fbfbfb;
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--ihs-gold);
+      padding: 1.25rem;
+      border-radius: 12px;
+    }
+
+    .card h4{
+      color: var(--ihs-green);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p{
+      color: var(--muted);
+      margin-bottom: 0;
+      word-break: break-word;
+      font-size: 0.95rem;
+    }
+
+    .stats{
+      display: flex;
+      gap: 2rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat-item{
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .stat-number{
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--ihs-green);
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-label{
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 0.25rem;
+    }
+
+    code{
+      background: var(--code-bg);
+      padding: 0.15rem 0.35rem;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+      color: #7c2d12;
+    }
+
+    pre{
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 1.25rem;
+      border-radius: 12px;
+      overflow-x: auto;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-top: 0.75rem;
+      line-height: 1.5;
+    }
+
+    pre code{
+      background: none;
+      color: inherit;
+      padding: 0;
+    }
+
+    .buttons{
+      display: flex;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .btn{
+      display: inline-block;
+      padding: 0.75rem 1.2rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 1px solid transparent;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .btn-primary{
+      background: var(--ihs-green);
+      color: #fff;
+    }
+
+    .btn-primary:hover{
+      background: var(--ihs-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .btn-secondary{
+      background: transparent;
+      color: var(--ihs-green);
+      border: 1px solid rgba(48,64,32,0.35);
+    }
+
+    .btn-secondary:hover{
+      background: rgba(48,64,32,0.08);
+    }
+
+    .list{
+      list-style: none;
+      margin: 0.75rem 0 0 0;
+      padding: 0;
+    }
+
+    .list li{
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+    }
+
+    .list li::before{
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--ihs-gold);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .term-list{
+      list-style: none;
+      margin: 1rem 0;
+      padding: 0;
+    }
+
+    .term-list li{
+      padding: 0.65rem 0;
+      border-bottom: 1px solid rgba(48,64,32,0.1);
+    }
+
+    .term-list li:last-child{
+      border-bottom: none;
+    }
+
+    .term-list a{
+      color: var(--ihs-green);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .term-list a:hover{
+      text-decoration: underline;
+    }
+
+    .term-note{
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-left: 1rem;
+      margin-top: 0.25rem;
+      display: block;
+    }
+
+    .term-section{
+      margin-top: 1.5rem;
+    }
+
+    footer{
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    footer a{
+      color: var(--ihs-green);
+      text-decoration: none;
+    }
+
+    footer a:hover{
+      text-decoration: underline;
+    }
+
+    @media (max-width: 720px){
+      .brand{ flex-direction: column; align-items: flex-start; }
+      .brand-text h1{ font-size: 1.5rem; }
+      main{ padding: 1.35rem; }
+      .btn{ width: 100%; text-align: center; }
+      .stats{ gap: 1rem; }
+    }
+  </style>
+</head>
+
+<body data-lang="en">
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <img class="brand-logo" src="assets/ihs-logo.png" alt="Iroko Historical Society logo">
+        <div class="brand-text">
+          <h1>Iroko Framework: Ewé Module</h1>
+          <p class="subtitle">
+            <span data-i18n="en">Linked Data Vocabulary for Ethically Governed Ethnobotanical Knowledge</span>
+            <span data-i18n="es">Vocabulario de Datos Enlazados para Conocimiento Etnobotánico Éticamente Gobernado</span>
+            <span data-i18n="fr">Vocabulaire de Données Liées pour la Connaissance Ethnobotanique Éthiquement Gouvernée</span>
+            <span data-i18n="pt">Vocabulário de Dados Ligados para Conhecimento Etnobotânico Eticamente Governado</span>
+            <span data-i18n="yo">Ọ̀rọ̀-ìsọ̀rí Dátà Tí A So Pọ̀ Fún Ìmọ̀ Ewé-Ìbílẹ̀ Tí A Ṣàkóso Pẹ̀lú Ìlànà Ìwà-Rere</span>
+          </p>
+          <span class="badge">Version 0.2.1 | February 2026</span>
+
+          <!-- Language Switcher -->
+          <div class="lang-bar" role="navigation" aria-label="Language selector">
+            <button class="lang-btn active" onclick="setLang('en')" data-langbtn="en">English</button>
+            <button class="lang-btn" onclick="setLang('es')" data-langbtn="es">Español</button>
+            <button class="lang-btn" onclick="setLang('fr')" data-langbtn="fr">Français</button>
+            <button class="lang-btn" onclick="setLang('pt')" data-langbtn="pt">Português</button>
+            <button class="lang-btn" onclick="setLang('yo')" data-langbtn="yo">Èdè Yorùbá</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- ═══════════════ OVERVIEW ═══════════════ -->
+      <section id="overview">
+        <h2>
+          <span data-i18n="en">Overview</span>
+          <span data-i18n="es">Descripción General</span>
+          <span data-i18n="fr">Aperçu</span>
+          <span data-i18n="pt">Visão Geral</span>
+          <span data-i18n="yo">Àkópọ̀</span>
+        </h2>
+
+        <div class="i18n-block" data-i18n="en">
+          <p>The Iroko Framework: Ewé vocabulary enables representation of Afro-Atlantic botanical knowledge while respecting traditional protocols through graduated disclosure mechanisms. It implements a two-layer model separating open botanical science from governed spiritual knowledge.</p>
+        </div>
+        <div class="i18n-block" data-i18n="es">
+          <p>El vocabulario Iroko Framework: Ewé permite la representación del conocimiento botánico afroatlántico respetando los protocolos tradicionales mediante mecanismos de divulgación graduada. Implementa un modelo de dos capas que separa la ciencia botánica abierta del conocimiento espiritual gobernado.</p>
+        </div>
+        <div class="i18n-block" data-i18n="fr">
+          <p>Le vocabulaire Iroko Framework : Ewé permet la représentation des connaissances botaniques afro-atlantiques tout en respectant les protocoles traditionnels grâce à des mécanismes de divulgation graduée. Il met en œuvre un modèle à deux couches séparant la science botanique ouverte des connaissances spirituelles gouvernées.</p>
+        </div>
+        <div class="i18n-block" data-i18n="pt">
+          <p>O vocabulário Iroko Framework: Ewé permite a representação do conhecimento botânico afro-atlântico respeitando os protocolos tradicionais através de mecanismos de divulgação graduada. Implementa um modelo de duas camadas separando a ciência botânica aberta do conhecimento espiritual governado.</p>
+        </div>
+        <div class="i18n-block" data-i18n="yo">
+          <p>Ọ̀rọ̀-ìsọ̀rí Iroko Framework: Ewé ń fún wa ní agbára láti ṣàpèjúwe ìmọ̀ ewé ilẹ̀ Afro-Àtìláńtíìkì nígbà tí a ń bọ̀wọ̀ fún àwọn ìlànà àṣà nípasẹ̀ ètò ìfihàn tí a ṣe lọ́nà ìpele-ìpele. Ó ń lo àwòṣe ìpele méjì tí ó yà sáyẹ́nsì ewé gbangba kúrò nínú ìmọ̀ ẹ̀mí tí a ṣàkóso.</p>
+        </div>
+
+        <div class="alert alert-success">
+          <span data-i18n="en"><strong>CARE Principles Compliant:</strong> This vocabulary implements Indigenous Data Governance standards—Collective Benefit, Authority to Control, Responsibility, and Ethics—maintaining community sovereignty over sacred knowledge while enabling scientific discovery.</span>
+          <span data-i18n="es"><strong>Conforme con los Principios CARE:</strong> Este vocabulario implementa los estándares de Gobernanza de Datos Indígenas—Beneficio Colectivo, Autoridad de Control, Responsabilidad y Ética—manteniendo la soberanía comunitaria sobre el conocimiento sagrado mientras permite el descubrimiento científico.</span>
+          <span data-i18n="fr"><strong>Conforme aux Principes CARE :</strong> Ce vocabulaire met en œuvre les normes de Gouvernance des Données Autochtones—Bénéfice Collectif, Autorité de Contrôle, Responsabilité et Éthique—maintenant la souveraineté communautaire sur les connaissances sacrées tout en permettant la découverte scientifique.</span>
+          <span data-i18n="pt"><strong>Conforme com os Princípios CARE:</strong> Este vocabulário implementa os padrões de Governança de Dados Indígenas—Benefício Coletivo, Autoridade de Controle, Responsabilidade e Ética—mantendo a soberania comunitária sobre o conhecimento sagrado enquanto possibilita a descoberta científica.</span>
+          <span data-i18n="yo"><strong>Ìbámu Pẹ̀lú Àwọn Ìlànà CARE:</strong> Ọ̀rọ̀-ìsọ̀rí yìí ń mú àwọn ìlànà Ìṣàkóso Dátà Ọmọ Ìbílẹ̀ ṣiṣẹ́—Àǹfààní Àpapọ̀, Àṣẹ Ìṣàkóso, Ojúṣe, àti Ìwà-Rere—tí ó ń pa ọlá-àkóso àwùjọ lórí ìmọ̀ mímọ́ mọ́ nígbà tí ó sì ń jẹ́ kí ìwádìí sáyẹ́nsì ṣeéṣe.</span>
+        </div>
+
+        <div class="buttons">
+          <a class="btn btn-primary" href="vocab/iroko-ewe-module.ttl">
+            <span data-i18n="en">Download Vocabulary (TTL)</span>
+            <span data-i18n="es">Descargar Vocabulario (TTL)</span>
+            <span data-i18n="fr">Télécharger le Vocabulaire (TTL)</span>
+            <span data-i18n="pt">Baixar Vocabulário (TTL)</span>
+            <span data-i18n="yo">Ṣe Ìgbàsílẹ̀ Ọ̀rọ̀-ìsọ̀rí (TTL)</span>
+          </a>
+          <a class="btn btn-secondary" href="https://github.com/iroko-framework/iroko-ewe-module" target="_blank" rel="noreferrer">
+            <span data-i18n="en">GitHub Repository</span>
+            <span data-i18n="es">Repositorio en GitHub</span>
+            <span data-i18n="fr">Dépôt GitHub</span>
+            <span data-i18n="pt">Repositório GitHub</span>
+            <span data-i18n="yo">Ibi Ìpamọ́ GitHub</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ═══════════════ NAMESPACE ═══════════════ -->
+      <section id="namespace">
+        <h2>
+          <span data-i18n="en">Namespace Information</span>
+          <span data-i18n="es">Información del Espacio de Nombres</span>
+          <span data-i18n="fr">Informations sur l'Espace de Noms</span>
+          <span data-i18n="pt">Informações do Espaço de Nomes</span>
+          <span data-i18n="yo">Àlàyé Orúkọ-Àyè</span>
+        </h2>
+        <div class="info-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+          <div class="card">
+            <h4>
+              <span data-i18n="en">Namespace URI</span>
+              <span data-i18n="es">URI del Espacio de Nombres</span>
+              <span data-i18n="fr">URI de l'Espace de Noms</span>
+              <span data-i18n="pt">URI do Espaço de Nomes</span>
+              <span data-i18n="yo">URI Orúkọ-Àyè</span>
+            </h4>
+            <p><code>https://iroko-framework.github.io/iroko-ewe-module/terms/</code></p>
+          </div>
+          <div class="card">
+            <h4>
+              <span data-i18n="en">Preferred Prefix</span>
+              <span data-i18n="es">Prefijo Preferido</span>
+              <span data-i18n="fr">Préfixe Préféré</span>
+              <span data-i18n="pt">Prefixo Preferido</span>
+              <span data-i18n="yo">Ìṣáájú Tí A Fẹ́ràn</span>
+            </h4>
+            <p><code>iroko:</code></p>
+          </div>
+          <div class="card">
+            <h4>
+              <span data-i18n="en">License</span>
+              <span data-i18n="es">Licencia</span>
+              <span data-i18n="fr">Licence</span>
+              <span data-i18n="pt">Licença</span>
+              <span data-i18n="yo">Ìwé-Àṣẹ</span>
+            </h4>
+            <p>CC BY 4.0</p>
+          </div>
+          <div class="card">
+            <h4>
+              <span data-i18n="en">Maintained By</span>
+              <span data-i18n="es">Mantenido Por</span>
+              <span data-i18n="fr">Maintenu Par</span>
+              <span data-i18n="pt">Mantido Por</span>
+              <span data-i18n="yo">Ẹni Tí Ó Ń Ṣètò Rẹ̀</span>
+            </h4>
+            <p>Iroko Historical Society</p>
+            <p style="margin-top: 0.25rem;"><a href="https://www.irokosociety.org">irokosociety.org</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ STATISTICS ═══════════════ -->
+      <section id="statistics">
+        <h2>
+          <span data-i18n="en">Vocabulary Statistics</span>
+          <span data-i18n="es">Estadísticas del Vocabulario</span>
+          <span data-i18n="fr">Statistiques du Vocabulaire</span>
+          <span data-i18n="pt">Estatísticas do Vocabulário</span>
+          <span data-i18n="yo">Àwọn Ìṣirò Ọ̀rọ̀-ìsọ̀rí</span>
+        </h2>
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-number">5</span>
+            <span class="stat-label">
+              <span data-i18n="en">Core Properties</span>
+              <span data-i18n="es">Propiedades Centrales</span>
+              <span data-i18n="fr">Propriétés Principales</span>
+              <span data-i18n="pt">Propriedades Centrais</span>
+              <span data-i18n="yo">Àwọn Ohun Ìní Pàtàkì</span>
+            </span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">3</span>
+            <span class="stat-label">
+              <span data-i18n="en">Concept Schemes</span>
+              <span data-i18n="es">Esquemas de Conceptos</span>
+              <span data-i18n="fr">Schémas de Concepts</span>
+              <span data-i18n="pt">Esquemas de Conceitos</span>
+              <span data-i18n="yo">Àwọn Ètò Èrò</span>
+            </span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">17</span>
+            <span class="stat-label">
+              <span data-i18n="en">Controlled Terms</span>
+              <span data-i18n="es">Términos Controlados</span>
+              <span data-i18n="fr">Termes Contrôlés</span>
+              <span data-i18n="pt">Termos Controlados</span>
+              <span data-i18n="yo">Àwọn Ọ̀rọ̀ Tí A Ṣàkóso</span>
+            </span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">6</span>
+            <span class="stat-label">
+              <span data-i18n="en">Access Levels</span>
+              <span data-i18n="es">Niveles de Acceso</span>
+              <span data-i18n="fr">Niveaux d'Accès</span>
+              <span data-i18n="pt">Níveis de Acesso</span>
+              <span data-i18n="yo">Àwọn Ìpele Àṣẹ-Wọlé</span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ KEY FEATURES ═══════════════ -->
+      <section id="features">
+        <h2>
+          <span data-i18n="en">Key Features</span>
+          <span data-i18n="es">Características Principales</span>
+          <span data-i18n="fr">Caractéristiques Principales</span>
+          <span data-i18n="pt">Características Principais</span>
+          <span data-i18n="yo">Àwọn Ẹ̀yà Pàtàkì</span>
+        </h2>
+
+        <div class="i18n-block" data-i18n="en">
+          <ul class="list">
+            <li><strong>Graduated Access Control:</strong> Six levels from fully public to restricted, implementing digital sovereignty over sacred knowledge</li>
+            <li><strong>Non-Operational Design:</strong> Describes ritual and medicinal context without revealing operational procedures, preventing commodification</li>
+            <li><strong>Standards Alignment:</strong> Integrates Darwin Core (biodiversity), SKOS (knowledge organization), and Dublin Core (metadata)</li>
+            <li><strong>Multilingual Support:</strong> Language-tagged labels for Yoruba, Lucumí, English, Spanish, French, Italian, Arabic, German, and more</li>
+            <li><strong>Name Collision Handling:</strong> Explicit flagging and documentation of vernacular name ambiguity across regions and traditions</li>
+            <li><strong>CARE Principles Implementation:</strong> Collective benefit, authority to control, responsibility, and ethics embedded in design</li>
+            <li><strong>Provenance Tracking:</strong> Links to primary ethnobotanical sources and supplemental documentation</li>
+            <li><strong>Epistemic Centering:</strong> Yoruba names as <code>skos:prefLabel</code> centers source-language terminology in data architecture</li>
+          </ul>
+        </div>
+
+        <div class="i18n-block" data-i18n="es">
+          <ul class="list">
+            <li><strong>Control de Acceso Graduado:</strong> Seis niveles desde completamente público hasta restringido, implementando soberanía digital sobre el conocimiento sagrado</li>
+            <li><strong>Diseño No Operacional:</strong> Describe el contexto ritual y medicinal sin revelar procedimientos operacionales, previniendo la mercantilización</li>
+            <li><strong>Alineación con Estándares:</strong> Integra Darwin Core (biodiversidad), SKOS (organización del conocimiento) y Dublin Core (metadatos)</li>
+            <li><strong>Soporte Multilingüe:</strong> Etiquetas de idioma para yoruba, lucumí, inglés, español, francés, italiano, árabe, alemán y más</li>
+            <li><strong>Manejo de Colisión de Nombres:</strong> Señalización explícita y documentación de la ambigüedad de nombres vernáculos entre regiones y tradiciones</li>
+            <li><strong>Implementación de Principios CARE:</strong> Beneficio colectivo, autoridad de control, responsabilidad y ética integrados en el diseño</li>
+            <li><strong>Rastreo de Procedencia:</strong> Enlaces a fuentes etnobotánicas primarias y documentación complementaria</li>
+            <li><strong>Centrado Epistémico:</strong> Los nombres en yoruba como <code>skos:prefLabel</code> centran la terminología del idioma fuente en la arquitectura de datos</li>
+          </ul>
+        </div>
+
+        <div class="i18n-block" data-i18n="fr">
+          <ul class="list">
+            <li><strong>Contrôle d'Accès Gradué :</strong> Six niveaux du totalement public au restreint, mettant en œuvre la souveraineté numérique sur les connaissances sacrées</li>
+            <li><strong>Conception Non Opérationnelle :</strong> Décrit le contexte rituel et médicinal sans révéler les procédures opérationnelles, empêchant la marchandisation</li>
+            <li><strong>Alignement sur les Normes :</strong> Intègre Darwin Core (biodiversité), SKOS (organisation des connaissances) et Dublin Core (métadonnées)</li>
+            <li><strong>Support Multilingue :</strong> Étiquettes linguistiques pour le yoruba, le lucumí, l'anglais, l'espagnol, le français, l'italien, l'arabe, l'allemand et plus</li>
+            <li><strong>Gestion des Collisions de Noms :</strong> Signalement explicite et documentation de l'ambiguïté des noms vernaculaires entre régions et traditions</li>
+            <li><strong>Mise en Œuvre des Principes CARE :</strong> Bénéfice collectif, autorité de contrôle, responsabilité et éthique intégrés dans la conception</li>
+            <li><strong>Suivi de Provenance :</strong> Liens vers les sources ethnobotaniques primaires et la documentation complémentaire</li>
+            <li><strong>Centrage Épistémique :</strong> Les noms yoruba en <code>skos:prefLabel</code> centrent la terminologie de la langue source dans l'architecture des données</li>
+          </ul>
+        </div>
+
+        <div class="i18n-block" data-i18n="pt">
+          <ul class="list">
+            <li><strong>Controle de Acesso Graduado:</strong> Seis níveis do completamente público ao restrito, implementando soberania digital sobre o conhecimento sagrado</li>
+            <li><strong>Design Não Operacional:</strong> Descreve o contexto ritual e medicinal sem revelar procedimentos operacionais, prevenindo a mercantilização</li>
+            <li><strong>Alinhamento com Padrões:</strong> Integra Darwin Core (biodiversidade), SKOS (organização do conhecimento) e Dublin Core (metadados)</li>
+            <li><strong>Suporte Multilíngue:</strong> Etiquetas de idioma para iorubá, lucumí, inglês, espanhol, francês, italiano, árabe, alemão e mais</li>
+            <li><strong>Tratamento de Colisão de Nomes:</strong> Sinalização explícita e documentação da ambiguidade de nomes vernáculos entre regiões e tradições</li>
+            <li><strong>Implementação dos Princípios CARE:</strong> Benefício coletivo, autoridade de controle, responsabilidade e ética integrados no design</li>
+            <li><strong>Rastreamento de Proveniência:</strong> Links para fontes etnobotânicas primárias e documentação complementar</li>
+            <li><strong>Centralização Epistêmica:</strong> Nomes em iorubá como <code>skos:prefLabel</code> centralizam a terminologia da língua-fonte na arquitetura de dados</li>
+          </ul>
+        </div>
+
+        <div class="i18n-block" data-i18n="yo">
+          <ul class="list">
+            <li><strong>Ìṣàkóso Àṣẹ-Wọlé Ìpele-Ìpele:</strong> Ìpele mẹ́fà láti gbangba pátápátá dé ìdènà, tí ó ń mú ọlá-àkóso dígítà lórí ìmọ̀ mímọ́ ṣiṣẹ́</li>
+            <li><strong>Àpèjúwe Tí Kò Ṣe Iṣẹ́:</strong> Ó ṣàpèjúwe ọ̀rọ̀ ìṣẹ̀sín àti oògùn láìfi ìlànà iṣẹ́ hàn, tí ó ń dènà ṣíṣòwò rẹ̀</li>
+            <li><strong>Ìbámu Pẹ̀lú Àwọn Ìlànà:</strong> Ó so Darwin Core (ohun alààyè), SKOS (ètò ìmọ̀), àti Dublin Core (mẹ́tádátà) papọ̀</li>
+            <li><strong>Àtìlẹ́yìn Èdè Púpọ̀:</strong> Àwọn àmì èdè fún Yorùbá, Lucumí, Gẹ̀ẹ́sì, Sípáníìṣì, Fàránsé, Ítálì, Lárúbáwá, Jámánì, àti bẹ́ẹ̀ bẹ́ẹ̀ lọ</li>
+            <li><strong>Ìṣàkóso Ìkọlura Orúkọ:</strong> Àmì àti ìwé tí ó ṣe kedere fún àìdájú orúkọ ìbílẹ̀ láàrín àwọn agbègbè àti àṣà</li>
+            <li><strong>Ìmúṣẹ Àwọn Ìlànà CARE:</strong> Àǹfààní àpapọ̀, àṣẹ ìṣàkóso, ojúṣe, àti ìwà rere tí a fi sínú àpèjúwe</li>
+            <li><strong>Ìtọpinpin Orísun:</strong> Àwọn ìjápọ̀ sí àwọn orísun ewé-ìbílẹ̀ àkọ́kọ́ àti ìwé àfikún</li>
+            <li><strong>Ìfisípò Ẹ̀kọ́:</strong> Orúkọ Yorùbá gẹ́gẹ́ bí <code>skos:prefLabel</code> fi èdè orísun sí àárín àpèjúwe dátà</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ═══════════════ CORE PROPERTIES ═══════════════ -->
+      <section id="core-terms">
+        <h2>
+          <span data-i18n="en">Core Properties &amp; Terms</span>
+          <span data-i18n="es">Propiedades y Términos Centrales</span>
+          <span data-i18n="fr">Propriétés et Termes Principaux</span>
+          <span data-i18n="pt">Propriedades e Termos Centrais</span>
+          <span data-i18n="yo">Àwọn Ohun Ìní àti Ọ̀rọ̀ Pàtàkì</span>
+        </h2>
+        <p>
+          <span data-i18n="en">Essential properties for describing plants and managing access to sensitive knowledge.</span>
+          <span data-i18n="es">Propiedades esenciales para describir plantas y gestionar el acceso al conocimiento sensible.</span>
+          <span data-i18n="fr">Propriétés essentielles pour décrire les plantes et gérer l'accès aux connaissances sensibles.</span>
+          <span data-i18n="pt">Propriedades essenciais para descrever plantas e gerenciar o acesso ao conhecimento sensível.</span>
+          <span data-i18n="yo">Àwọn ohun ìní pàtàkì fún ṣíṣàpèjúwe ewé àti ṣíṣàkóso àṣẹ-wọlé sí ìmọ̀ tí ó ní ìtọ́jú.</span>
+        </p>
+
+        <ul class="term-list">
+          <li>
+            <a href="terms/ritualContext.md"><code>iroko:ritualContext</code></a>
+            <span class="term-note">
+              <span data-i18n="en">Free-text field for ceremonial usage context. Content is governed by access level designation to prevent operational disclosure.</span>
+              <span data-i18n="es">Campo de texto libre para contexto de uso ceremonial. El contenido está gobernado por la designación del nivel de acceso para prevenir la divulgación operacional.</span>
+              <span data-i18n="fr">Champ de texte libre pour le contexte d'utilisation cérémonielle. Le contenu est régi par la désignation du niveau d'accès pour empêcher la divulgation opérationnelle.</span>
+              <span data-i18n="pt">Campo de texto livre para contexto de uso cerimonial. O conteúdo é governado pela designação do nível de acesso para prevenir divulgação operacional.</span>
+              <span data-i18n="yo">Àyè ọ̀rọ̀ ọ̀fẹ́ fún ọ̀rọ̀ lílo ìṣẹ̀sín. A ṣàkóso àkóónú rẹ̀ nípasẹ̀ ìpele àṣẹ-wọlé láti dènà ìfihàn iṣẹ́.</span>
+            </span>
+          </li>
+          <li>
+            <a href="terms/nameCollision.md"><code>iroko:nameCollision</code></a>
+            <span class="term-note">
+              <span data-i18n="en">Boolean flag indicating whether vernacular names create taxonomic ambiguity across regions or traditions (xsd:boolean).</span>
+              <span data-i18n="es">Indicador booleano que señala si los nombres vernáculos crean ambigüedad taxonómica entre regiones o tradiciones (xsd:boolean).</span>
+              <span data-i18n="fr">Indicateur booléen signalant si les noms vernaculaires créent une ambiguïté taxonomique entre les régions ou traditions (xsd:boolean).</span>
+              <span data-i18n="pt">Sinalizador booleano indicando se nomes vernáculos criam ambiguidade taxonômica entre regiões ou tradições (xsd:boolean).</span>
+              <span data-i18n="yo">Àmì boolean tí ó ń fi hàn bóyá àwọn orúkọ ìbílẹ̀ ń dá àìdájú ìtòlẹ́sẹẹsẹ sílẹ̀ láàrín àwọn agbègbè tàbí àṣà (xsd:boolean).</span>
+            </span>
+          </li>
+          <li>
+            <a href="terms/collisionNotes.md"><code>iroko:collisionNotes</code></a>
+            <span class="term-note">
+              <span data-i18n="en">Explanatory text documenting specific vernacular name ambiguities, regional variations, or cross-cultural naming conflicts.</span>
+              <span data-i18n="es">Texto explicativo que documenta ambigüedades específicas de nombres vernáculos, variaciones regionales o conflictos de denominación transcultural.</span>
+              <span data-i18n="fr">Texte explicatif documentant les ambiguïtés spécifiques des noms vernaculaires, les variations régionales ou les conflits de dénomination interculturels.</span>
+              <span data-i18n="pt">Texto explicativo documentando ambiguidades específicas de nomes vernáculos, variações regionais ou conflitos de nomenclatura intercultural.</span>
+              <span data-i18n="yo">Ọ̀rọ̀ àlàyé tí ó ṣe àkọsílẹ̀ àwọn àìdájú orúkọ ìbílẹ̀ kan pàtó, ìyàtọ̀ agbègbè, tàbí ìjà-orúkọ àṣà-àgbélébùú.</span>
+            </span>
+          </li>
+        </ul>
+
+        <div class="term-section">
+          <h4>
+            <span data-i18n="en">Supporting Terms</span>
+            <span data-i18n="es">Términos de Apoyo</span>
+            <span data-i18n="fr">Termes de Support</span>
+            <span data-i18n="pt">Termos de Suporte</span>
+            <span data-i18n="yo">Àwọn Ọ̀rọ̀ Àtìlẹ́yìn</span>
+          </h4>
+          <ul class="term-list">
+            <li>
+              <a href="terms/plant.md"><code>iroko:Plant</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Optional class definition. Plants are modeled as SKOS concepts with botanical and cultural metadata.</span>
+                <span data-i18n="es">Definición de clase opcional. Las plantas se modelan como conceptos SKOS con metadatos botánicos y culturales.</span>
+                <span data-i18n="fr">Définition de classe optionnelle. Les plantes sont modélisées comme des concepts SKOS avec des métadonnées botaniques et culturelles.</span>
+                <span data-i18n="pt">Definição de classe opcional. As plantas são modeladas como conceitos SKOS com metadados botânicos e culturais.</span>
+                <span data-i18n="yo">Ìtumọ̀ kíláàsì àṣàyàn. A ṣe àwòṣe ewé gẹ́gẹ́ bí àwọn èrò SKOS pẹ̀lú mẹ́tádátà ewé àti àṣà.</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ═══════════════ CONTROLLED VOCABULARIES ═══════════════ -->
+      <section id="schemes">
+        <h2>
+          <span data-i18n="en">Controlled Vocabularies (SKOS Concept Schemes)</span>
+          <span data-i18n="es">Vocabularios Controlados (Esquemas de Conceptos SKOS)</span>
+          <span data-i18n="fr">Vocabulaires Contrôlés (Schémas de Concepts SKOS)</span>
+          <span data-i18n="pt">Vocabulários Controlados (Esquemas de Conceitos SKOS)</span>
+          <span data-i18n="yo">Àwọn Ọ̀rọ̀-ìsọ̀rí Tí A Ṣàkóso (Àwọn Ètò Èrò SKOS)</span>
+        </h2>
+
+        <!-- Access Level Scheme -->
+        <div class="term-section">
+          <h3>
+            <span data-i18n="en">Access Level Scheme</span>
+            <span data-i18n="es">Esquema de Niveles de Acceso</span>
+            <span data-i18n="fr">Schéma des Niveaux d'Accès</span>
+            <span data-i18n="pt">Esquema de Níveis de Acesso</span>
+            <span data-i18n="yo">Ètò Ìpele Àṣẹ-Wọlé</span>
+          </h3>
+          <p><a href="terms/accessLevel/">
+            <span data-i18n="en">Scheme definition and governance framework</span>
+            <span data-i18n="es">Definición del esquema y marco de gobernanza</span>
+            <span data-i18n="fr">Définition du schéma et cadre de gouvernance</span>
+            <span data-i18n="pt">Definição do esquema e estrutura de governança</span>
+            <span data-i18n="yo">Ìtumọ̀ ètò àti ìlànà ìṣàkóso</span>
+          </a></p>
+          <ul class="term-list">
+            <li>
+              <a href="terms/accessLevel/public-unrestricted.md"><code>iroko:accessLevel/public-unrestricted</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Fully open information with no restrictions on use, amplification, or redistribution.</span>
+                <span data-i18n="es">Información completamente abierta sin restricciones de uso, amplificación o redistribución.</span>
+                <span data-i18n="fr">Information entièrement ouverte sans restrictions d'utilisation, d'amplification ou de redistribution.</span>
+                <span data-i18n="pt">Informação completamente aberta sem restrições de uso, amplificação ou redistribuição.</span>
+                <span data-i18n="yo">Àlàyé tí ó ṣí gbangba pátápátá láìsí ìdènà lórí lílo, ìfisọ̀kan, tàbí ìtúnpín.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/accessLevel/public-no-amplification.md"><code>iroko:accessLevel/public-no-amplification</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Available information that should not be elaborated upon or sensationalized in secondary sources.</span>
+                <span data-i18n="es">Información disponible que no debe ser elaborada ni sensacionalizada en fuentes secundarias.</span>
+                <span data-i18n="fr">Information disponible qui ne doit pas être développée ou sensationnalisée dans les sources secondaires.</span>
+                <span data-i18n="pt">Informação disponível que não deve ser elaborada ou sensacionalizada em fontes secundárias.</span>
+                <span data-i18n="yo">Àlàyé tí ó wà tí a kò gbọ́dọ̀ fọ̀nká tàbí ṣe àsọdùn rẹ̀ nínú àwọn orísun kejì.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/accessLevel/limited-community-only.md"><code>iroko:accessLevel/limited-community-only</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Requires community membership or affiliation; withheld from general public access.</span>
+                <span data-i18n="es">Requiere membresía o afiliación comunitaria; restringido del acceso público general.</span>
+                <span data-i18n="fr">Nécessite l'appartenance ou l'affiliation communautaire ; retiré de l'accès public général.</span>
+                <span data-i18n="pt">Requer associação ou filiação comunitária; retido do acesso público geral.</span>
+                <span data-i18n="yo">Ó nílò jíjẹ́ ọmọ ẹgbẹ́ tàbí ìsopọ̀ àwùjọ; a fi pamọ́ kúrò lọ́wọ́ gbogbo ènìyàn.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/accessLevel/limited-initiated-only.md"><code>iroko:accessLevel/limited-initiated-only</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Requires formal initiation into tradition; restricted to practitioners with ceremonial authority.</span>
+                <span data-i18n="es">Requiere iniciación formal en la tradición; restringido a practicantes con autoridad ceremonial.</span>
+                <span data-i18n="fr">Nécessite une initiation formelle dans la tradition ; réservé aux praticiens ayant une autorité cérémonielle.</span>
+                <span data-i18n="pt">Requer iniciação formal na tradição; restrito a praticantes com autoridade cerimonial.</span>
+                <span data-i18n="yo">Ó nílò ìwọlé gidi sínú àṣà; a fi pamọ́ fún àwọn adáṣe tí wọ́n ní àṣẹ ìṣẹ̀sín.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/accessLevel/private-practitioner-access.md"><code>iroko:accessLevel/private-practitioner-access</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Requires specific ritual authority, lineage credentials, or elder designation within tradition.</span>
+                <span data-i18n="es">Requiere autoridad ritual específica, credenciales de linaje o designación de anciano dentro de la tradición.</span>
+                <span data-i18n="fr">Nécessite une autorité rituelle spécifique, des titres de lignée ou une désignation d'ancien au sein de la tradition.</span>
+                <span data-i18n="pt">Requer autoridade ritual específica, credenciais de linhagem ou designação de ancião dentro da tradição.</span>
+                <span data-i18n="yo">Ó nílò àṣẹ ìṣẹ̀sín pàtó, ẹ̀rí ìdílé, tàbí ìyàn àgbà nínú àṣà.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/accessLevel/restricted-no-access.md"><code>iroko:accessLevel/restricted-no-access</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Metadata only; knowledge is documented but intentionally withheld from all digital access.</span>
+                <span data-i18n="es">Solo metadatos; el conocimiento está documentado pero intencionalmente restringido de todo acceso digital.</span>
+                <span data-i18n="fr">Métadonnées uniquement ; les connaissances sont documentées mais intentionnellement retirées de tout accès numérique.</span>
+                <span data-i18n="pt">Apenas metadados; o conhecimento está documentado mas intencionalmente retido de todo acesso digital.</span>
+                <span data-i18n="yo">Mẹ́tádátà nìkan; a ṣe àkọsílẹ̀ ìmọ̀ náà ṣùgbọ́n a mọ̀ọ́mọ̀ fi pamọ́ kúrò lọ́wọ́ gbogbo àṣẹ-wọlé dígítà.</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Medicinal Use Scheme -->
+        <div class="term-section">
+          <h3>
+            <span data-i18n="en">Medicinal Use Category Scheme</span>
+            <span data-i18n="es">Esquema de Categorías de Uso Medicinal</span>
+            <span data-i18n="fr">Schéma des Catégories d'Utilisation Médicinale</span>
+            <span data-i18n="pt">Esquema de Categorias de Uso Medicinal</span>
+            <span data-i18n="yo">Ètò Ẹ̀ka Lílo Oògùn</span>
+          </h3>
+          <p><a href="terms/medicinalUse/">
+            <span data-i18n="en">Scheme definition for therapeutic applications</span>
+            <span data-i18n="es">Definición del esquema para aplicaciones terapéuticas</span>
+            <span data-i18n="fr">Définition du schéma pour les applications thérapeutiques</span>
+            <span data-i18n="pt">Definição do esquema para aplicações terapêuticas</span>
+            <span data-i18n="yo">Ìtumọ̀ ètò fún àwọn lílo ìwòsàn</span>
+          </a></p>
+          <ul class="term-list">
+            <li>
+              <a href="terms/medicinalUse/digestive-support.md"><code>iroko:medicinalUse/digestive-support</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Traditional use for gastrointestinal health, digestive function, or abdominal discomfort.</span>
+                <span data-i18n="es">Uso tradicional para la salud gastrointestinal, función digestiva o malestar abdominal.</span>
+                <span data-i18n="fr">Utilisation traditionnelle pour la santé gastro-intestinale, la fonction digestive ou l'inconfort abdominal.</span>
+                <span data-i18n="pt">Uso tradicional para saúde gastrointestinal, função digestiva ou desconforto abdominal.</span>
+                <span data-i18n="yo">Lílo àṣà fún ìlera ìfun, iṣẹ́ dídá oúnjẹ, tàbí ìrora inú.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/medicinalUse/respiratory-support.md"><code>iroko:medicinalUse/respiratory-support</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Traditional use for respiratory health, breathing support, or pulmonary conditions.</span>
+                <span data-i18n="es">Uso tradicional para la salud respiratoria, apoyo respiratorio o condiciones pulmonares.</span>
+                <span data-i18n="fr">Utilisation traditionnelle pour la santé respiratoire, le soutien respiratoire ou les affections pulmonaires.</span>
+                <span data-i18n="pt">Uso tradicional para saúde respiratória, suporte respiratório ou condições pulmonares.</span>
+                <span data-i18n="yo">Lílo àṣà fún ìlera ẹ̀mí-mímí, àtìlẹ́yìn ẹ̀mí-mímí, tàbí àìsàn ẹ̀dọ̀fóró.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/medicinalUse/skin-and-topical-use.md"><code>iroko:medicinalUse/skin-and-topical-use</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Traditional external application for skin conditions, wounds, or topical healing.</span>
+                <span data-i18n="es">Aplicación externa tradicional para condiciones de la piel, heridas o curación tópica.</span>
+                <span data-i18n="fr">Application externe traditionnelle pour les affections cutanées, les plaies ou la guérison topique.</span>
+                <span data-i18n="pt">Aplicação externa tradicional para condições da pele, feridas ou cura tópica.</span>
+                <span data-i18n="yo">Ìfiwọ́lé àṣà fún àìsàn awọ-ara, ọgbẹ́, tàbí ìwòsàn lórí ara.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/medicinalUse/general-tonic-revitalizing.md"><code>iroko:medicinalUse/general-tonic-revitalizing</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Traditional use as general health tonic, revitalizing agent, or overall wellness support.</span>
+                <span data-i18n="es">Uso tradicional como tónico general de salud, agente revitalizante o apoyo al bienestar general.</span>
+                <span data-i18n="fr">Utilisation traditionnelle comme tonique de santé général, agent revitalisant ou soutien au bien-être global.</span>
+                <span data-i18n="pt">Uso tradicional como tônico geral de saúde, agente revitalizante ou suporte ao bem-estar geral.</span>
+                <span data-i18n="yo">Lílo àṣà gẹ́gẹ́ bí oògùn àmúdára ìlera gbogbogbòò, olùsọdọ̀tun, tàbí àtìlẹ́yìn àlàáfíà.</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Ritual Use Scheme -->
+        <div class="term-section">
+          <h3>
+            <span data-i18n="en">Ritual Use Category Scheme</span>
+            <span data-i18n="es">Esquema de Categorías de Uso Ritual</span>
+            <span data-i18n="fr">Schéma des Catégories d'Utilisation Rituelle</span>
+            <span data-i18n="pt">Esquema de Categorias de Uso Ritual</span>
+            <span data-i18n="yo">Ètò Ẹ̀ka Lílo Ìṣẹ̀sín</span>
+          </h3>
+          <p><a href="terms/ritualUse/">
+            <span data-i18n="en">Scheme definition for ceremonial applications</span>
+            <span data-i18n="es">Definición del esquema para aplicaciones ceremoniales</span>
+            <span data-i18n="fr">Définition du schéma pour les applications cérémonielles</span>
+            <span data-i18n="pt">Definição do esquema para aplicações cerimoniais</span>
+            <span data-i18n="yo">Ìtumọ̀ ètò fún àwọn lílo ìṣẹ̀sín</span>
+          </a></p>
+          <ul class="term-list">
+            <li>
+              <a href="terms/ritualUse/cosmological-or-symbolic-association.md"><code>iroko:ritualUse/cosmological-or-symbolic-association</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Plant associated with specific cosmological principles, spiritual entities, or symbolic meanings within tradition.</span>
+                <span data-i18n="es">Planta asociada con principios cosmológicos específicos, entidades espirituales o significados simbólicos dentro de la tradición.</span>
+                <span data-i18n="fr">Plante associée à des principes cosmologiques spécifiques, des entités spirituelles ou des significations symboliques au sein de la tradition.</span>
+                <span data-i18n="pt">Planta associada a princípios cosmológicos específicos, entidades espirituais ou significados simbólicos dentro da tradição.</span>
+                <span data-i18n="yo">Ewé tí a so mọ́ àwọn ìlànà ìṣẹ̀dá pàtó, àwọn ẹ̀mí, tàbí ìtumọ̀ àmì nínú àṣà.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/ritualUse/healing-and-restoration.md"><code>iroko:ritualUse/healing-and-restoration</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Ceremonial use for spiritual healing, restoration of balance, or energetic wellness.</span>
+                <span data-i18n="es">Uso ceremonial para curación espiritual, restauración del equilibrio o bienestar energético.</span>
+                <span data-i18n="fr">Utilisation cérémonielle pour la guérison spirituelle, la restauration de l'équilibre ou le bien-être énergétique.</span>
+                <span data-i18n="pt">Uso cerimonial para cura espiritual, restauração do equilíbrio ou bem-estar energético.</span>
+                <span data-i18n="yo">Lílo ìṣẹ̀sín fún ìwòsàn ẹ̀mí, ìmúpadà ìwọ̀ntúnwọ̀nsí, tàbí àlàáfíà agbára.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/ritualUse/invocation-and-communication.md"><code>iroko:ritualUse/invocation-and-communication</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Used in ceremonies for invoking spiritual presence or facilitating communication with sacred forces.</span>
+                <span data-i18n="es">Utilizado en ceremonias para invocar presencia espiritual o facilitar la comunicación con fuerzas sagradas.</span>
+                <span data-i18n="fr">Utilisé dans les cérémonies pour invoquer une présence spirituelle ou faciliter la communication avec les forces sacrées.</span>
+                <span data-i18n="pt">Usado em cerimônias para invocar presença espiritual ou facilitar comunicação com forças sagradas.</span>
+                <span data-i18n="yo">A ń lò nínú ìṣẹ̀sín fún ìpè wíwá ẹ̀mí tàbí ṣíṣe ìbáraẹnisọ̀rọ̀ pẹ̀lú àwọn agbára mímọ́.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/ritualUse/offering-and-devotion.md"><code>iroko:ritualUse/offering-and-devotion</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Used as offering, gift, or devotional material in ceremonial contexts.</span>
+                <span data-i18n="es">Utilizado como ofrenda, regalo o material devocional en contextos ceremoniales.</span>
+                <span data-i18n="fr">Utilisé comme offrande, don ou matériel dévotionnel dans des contextes cérémoniels.</span>
+                <span data-i18n="pt">Usado como oferenda, presente ou material devocional em contextos cerimoniais.</span>
+                <span data-i18n="yo">A ń lò gẹ́gẹ́ bí ẹbọ, ẹ̀bùn, tàbí ohun ìfọkànsìn nínú ọ̀rọ̀ ìṣẹ̀sín.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/ritualUse/protection-and-boundary-setting.md"><code>iroko:ritualUse/protection-and-boundary-setting</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Ceremonial use for spiritual protection, boundary reinforcement, or defense against harm.</span>
+                <span data-i18n="es">Uso ceremonial para protección espiritual, refuerzo de límites o defensa contra el daño.</span>
+                <span data-i18n="fr">Utilisation cérémonielle pour la protection spirituelle, le renforcement des frontières ou la défense contre le mal.</span>
+                <span data-i18n="pt">Uso cerimonial para proteção espiritual, reforço de limites ou defesa contra danos.</span>
+                <span data-i18n="yo">Lílo ìṣẹ̀sín fún ààbò ẹ̀mí, ìmúṣẹ àlà, tàbí ìgbèjà lọ́wọ́ ewu.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/ritualUse/purification-and-cleansing.md"><code>iroko:ritualUse/purification-and-cleansing</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Used in purification ceremonies, spiritual cleansing, or removal of negative influences.</span>
+                <span data-i18n="es">Utilizado en ceremonias de purificación, limpieza espiritual o eliminación de influencias negativas.</span>
+                <span data-i18n="fr">Utilisé dans les cérémonies de purification, le nettoyage spirituel ou l'élimination des influences négatives.</span>
+                <span data-i18n="pt">Usado em cerimônias de purificação, limpeza espiritual ou remoção de influências negativas.</span>
+                <span data-i18n="yo">A ń lò nínú ìṣẹ̀sín ìwẹ̀nùmọ́, ìfọ̀mọ́ ẹ̀mí, tàbí yíyọ àwọn ipá búburú kúrò.</span>
+              </span>
+            </li>
+            <li>
+              <a href="terms/ritualUse/rites-of-transition.md"><code>iroko:ritualUse/rites-of-transition</code></a>
+              <span class="term-note">
+                <span data-i18n="en">Used in life transition ceremonies including initiation, naming, marriage, or ancestor veneration.</span>
+                <span data-i18n="es">Utilizado en ceremonias de transición de vida incluyendo iniciación, nombramiento, matrimonio o veneración de ancestros.</span>
+                <span data-i18n="fr">Utilisé dans les cérémonies de transition de vie incluant l'initiation, la nomination, le mariage ou la vénération des ancêtres.</span>
+                <span data-i18n="pt">Usado em cerimônias de transição de vida incluindo iniciação, nomeação, casamento ou veneração dos ancestrais.</span>
+                <span data-i18n="yo">A ń lò nínú àwọn ìṣẹ̀sín ìyípadà ìgbésí-ayé pẹ̀lú ìwọlé, ìsọmọlórúkọ, ìgbéyàwó, tàbí ìbọ̀wọ̀ fún àwọn baba-ńlá.</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ═══════════════ COMPLETE EXAMPLE — not translated, it's RDF ═══════════════ -->
+      <section id="example">
+        <h2>
+          <span data-i18n="en">Complete Example</span>
+          <span data-i18n="es">Ejemplo Completo</span>
+          <span data-i18n="fr">Exemple Complet</span>
+          <span data-i18n="pt">Exemplo Completo</span>
+          <span data-i18n="yo">Àpẹẹrẹ Kíkún</span>
+        </h2>
+        <p>
+          <span data-i18n="en">This example demonstrates the full vocabulary applied to a plant record with governed access and multilingual naming:</span>
+          <span data-i18n="es">Este ejemplo demuestra el vocabulario completo aplicado a un registro de planta con acceso gobernado y nomenclatura multilingüe:</span>
+          <span data-i18n="fr">Cet exemple démontre le vocabulaire complet appliqué à un enregistrement de plante avec accès gouverné et dénomination multilingue :</span>
+          <span data-i18n="pt">Este exemplo demonstra o vocabulário completo aplicado a um registro de planta com acesso governado e nomenclatura multilíngue:</span>
+          <span data-i18n="yo">Àpẹẹrẹ yìí ṣàfihàn ọ̀rọ̀-ìsọ̀rí kíkún tí a lò lórí àkọsílẹ̀ ewé kan pẹ̀lú àṣẹ-wọlé tí a ṣàkóso àti ìsọ-orúkọ èdè púpọ̀:</span>
+        </p>
+        <pre><code>@prefix iroko: &lt;https://iroko-framework.github.io/iroko-ewe-module/terms/&gt; .
+@prefix dwc: &lt;http://rs.tdwg.org/dwc/terms/&gt; .
+@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;http://example.org/plant/0001&gt; a skos:Concept ;
+    dcterms:identifier "Plant0001" ;
+    dwc:scientificName "Milicia excelsa" ;
+    skos:prefLabel "Ìrókò"@yo, "Èrò ìrókò"@yo, "Iròkò èwọ̀,  "Iròkò aládé oko ;
+    skos:altLabel "African Teak"@en,
+                  "Iroko"@x-lucumi,
+                  "La Ceiba"@es,
+                  "God Tree"@en ;
+    iroko:accessLevel iroko:accessLevel/public-unrestricted ;
+    iroko:medicinalUse iroko:medicinalUse/respiratory-support ;
+    iroko:ritualUse iroko:ritualUse/cosmological-or-symbolic-association,
+                    iroko:ritualUse/protection-and-boundary-setting ;
+    iroko:nameCollision true ;
+    iroko:collisionNotes "Shares the vernacular name 'Iròkò' with Ceiba pentandra in some ritual and popular contexts; distinguished here by Verger attestation" ;
+    dcterms:source "Verger, Pierre Fatumbi. Ewé: The Use of Plants in Yoruba Society. 1995." .</code></pre>
+        <p style="color: var(--muted); margin-top: 0.75rem; font-size: 0.95rem;">
+          <span data-i18n="en"><strong>Note:</strong> This demonstrates epistemic centering—Yoruba names are designated as <code>skos:prefLabel</code> while other language variants use <code>skos:altLabel</code>. Governed knowledge (access, ritual use, medicinal use) references controlled concept schemes via URI.</span>
+          <span data-i18n="es"><strong>Nota:</strong> Esto demuestra el centrado epistémico—los nombres en yoruba se designan como <code>skos:prefLabel</code> mientras que otras variantes lingüísticas usan <code>skos:altLabel</code>. El conocimiento gobernado (acceso, uso ritual, uso medicinal) referencia esquemas de conceptos controlados vía URI.</span>
+          <span data-i18n="fr"><strong>Note :</strong> Ceci démontre le centrage épistémique—les noms yoruba sont désignés comme <code>skos:prefLabel</code> tandis que les autres variantes linguistiques utilisent <code>skos:altLabel</code>. Les connaissances gouvernées (accès, utilisation rituelle, utilisation médicinale) référencent des schémas de concepts contrôlés via URI.</span>
+          <span data-i18n="pt"><strong>Nota:</strong> Isso demonstra a centralização epistêmica—os nomes em iorubá são designados como <code>skos:prefLabel</code> enquanto outras variantes linguísticas usam <code>skos:altLabel</code>. O conhecimento governado (acesso, uso ritual, uso medicinal) referencia esquemas de conceitos controlados via URI.</span>
+          <span data-i18n="yo"><strong>Àkíyèsí:</strong> Èyí ṣàfihàn ìfisípò ẹ̀kọ́—a yàn àwọn orúkọ Yorùbá gẹ́gẹ́ bí <code>skos:prefLabel</code> nígbà tí àwọn ìyàtọ̀ èdè mìíràn ń lo <code>skos:altLabel</code>. Ìmọ̀ tí a ṣàkóso (àṣẹ-wọlé, lílo ìṣẹ̀sín, lílo oògùn) ń tọ́ka sí àwọn ètò èrò tí a ṣàkóso nípasẹ̀ URI.</span>
+        </p>
+      </section>
+
+      <!-- ═══════════════ TRANSFORMATION EXAMPLE — RDF stays untranslated ═══════════════ -->
+      <section id="transformation">
+        <h2>
+          <span data-i18n="en">Transformation Example: From Source Data to RDF</span>
+          <span data-i18n="es">Ejemplo de Transformación: De Datos Fuente a RDF</span>
+          <span data-i18n="fr">Exemple de Transformation : Des Données Sources au RDF</span>
+          <span data-i18n="pt">Exemplo de Transformação: De Dados Fonte a RDF</span>
+          <span data-i18n="yo">Àpẹẹrẹ Ìyípadà: Láti Dátà Orísun sí RDF</span>
+        </h2>
+        <p>
+          <span data-i18n="en">This example demonstrates how pipe-delimited source data (common in CSV/Excel files) transforms into proper linked data triples:</span>
+          <span data-i18n="es">Este ejemplo demuestra cómo los datos fuente delimitados por barras verticales (comunes en archivos CSV/Excel) se transforman en tripletas de datos enlazados:</span>
+          <span data-i18n="fr">Cet exemple démontre comment les données sources délimitées par des barres verticales (courantes dans les fichiers CSV/Excel) se transforment en triplets de données liées :</span>
+          <span data-i18n="pt">Este exemplo demonstra como os dados fonte delimitados por barras verticais (comuns em arquivos CSV/Excel) se transformam em triplas de dados ligados:</span>
+          <span data-i18n="yo">Àpẹẹrẹ yìí ṣàfihàn bí dátà orísun tí a pín pẹ̀lú àmì-ìdá (tí ó wọ́pọ̀ nínú àwọn fáìlì CSV/Excel) ṣe yípadà sí àwọn mẹ́tẹ̀ẹ̀ta dátà tí a so pọ̀:</span>
+        </p>
+
+        <h3 style="margin-top: 1.5rem;">
+          <span data-i18n="en">Source Data (CSV Excerpt)</span>
+          <span data-i18n="es">Datos Fuente (Extracto CSV)</span>
+          <span data-i18n="fr">Données Sources (Extrait CSV)</span>
+          <span data-i18n="pt">Dados Fonte (Extrato CSV)</span>
+          <span data-i18n="yo">Dátà Orísun (Àpakan CSV)</span>
+        </h3>
+        <pre style="background: #f8f9fa; color: #333;"><code>Plant ID: Plant0001
+Scientific Name: Milicia excelsa
+Yoruba Name(s): Ìrókò | Èrò ìrókò | Iròkò èwọ̀ | Iròkò aládé oko
+Name (English): African Teak
+Name (Lucumi): Iroko
+Name (Cuba): La Ceiba
+Other Vernacular: God Tree
+Medicinal Uses: Respiratory Support
+Ritual Use: Cosmological or Symbolic Association | Protection and Boundary Setting
+Access Level: Public - Unrestricted
+Name Collision: Yes
+Collision Notes: Shares the vernacular name "Iròkò" with Ceiba pentandra in some ritual and popular contexts; distinguished here by Verger attestation</code></pre>
+
+        <h3 style="margin-top: 1.5rem;">
+          <span data-i18n="en">Transformation Process</span>
+          <span data-i18n="es">Proceso de Transformación</span>
+          <span data-i18n="fr">Processus de Transformation</span>
+          <span data-i18n="pt">Processo de Transformação</span>
+          <span data-i18n="yo">Ìlànà Ìyípadà</span>
+        </h3>
+        <div class="alert">
+          <span data-i18n="en"><strong>Key Transformation Rules:</strong></span>
+          <span data-i18n="es"><strong>Reglas Clave de Transformación:</strong></span>
+          <span data-i18n="fr"><strong>Règles Clés de Transformation :</strong></span>
+          <span data-i18n="pt"><strong>Regras Chave de Transformação:</strong></span>
+          <span data-i18n="yo"><strong>Àwọn Òfin Ìyípadà Pàtàkì:</strong></span>
+
+          <div class="i18n-block" data-i18n="en">
+            <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
+              <li>Pipe-delimited values (<code>|</code>) are split into separate RDF triples</li>
+              <li>Yoruba names become <code>skos:prefLabel</code> with <code>@yo</code> language tags</li>
+              <li>All other vernacular names become <code>skos:altLabel</code> with appropriate language tags</li>
+              <li>Controlled vocabulary values map to concept URIs in their respective schemes</li>
+              <li>"Yes"/"No" values normalize to <code>xsd:boolean</code> (true/false)</li>
+            </ul>
+          </div>
+          <div class="i18n-block" data-i18n="es">
+            <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
+              <li>Los valores delimitados por barras (<code>|</code>) se dividen en tripletas RDF separadas</li>
+              <li>Los nombres en yoruba se convierten en <code>skos:prefLabel</code> con etiquetas de idioma <code>@yo</code></li>
+              <li>Todos los demás nombres vernáculos se convierten en <code>skos:altLabel</code> con etiquetas de idioma apropiadas</li>
+              <li>Los valores de vocabulario controlado se mapean a URIs de conceptos en sus esquemas respectivos</li>
+              <li>Los valores "Sí"/"No" se normalizan a <code>xsd:boolean</code> (true/false)</li>
+            </ul>
+          </div>
+          <div class="i18n-block" data-i18n="fr">
+            <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
+              <li>Les valeurs délimitées par des barres (<code>|</code>) sont divisées en triplets RDF séparés</li>
+              <li>Les noms yoruba deviennent <code>skos:prefLabel</code> avec des étiquettes de langue <code>@yo</code></li>
+              <li>Tous les autres noms vernaculaires deviennent <code>skos:altLabel</code> avec les étiquettes de langue appropriées</li>
+              <li>Les valeurs de vocabulaire contrôlé sont mappées vers des URIs de concepts dans leurs schémas respectifs</li>
+              <li>Les valeurs « Oui »/« Non » se normalisent en <code>xsd:boolean</code> (true/false)</li>
+            </ul>
+          </div>
+          <div class="i18n-block" data-i18n="pt">
+            <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
+              <li>Valores delimitados por barras (<code>|</code>) são divididos em triplas RDF separadas</li>
+              <li>Nomes em iorubá tornam-se <code>skos:prefLabel</code> com etiquetas de idioma <code>@yo</code></li>
+              <li>Todos os outros nomes vernáculos tornam-se <code>skos:altLabel</code> com etiquetas de idioma apropriadas</li>
+              <li>Valores de vocabulário controlado são mapeados para URIs de conceitos em seus respectivos esquemas</li>
+              <li>Valores "Sim"/"Não" são normalizados para <code>xsd:boolean</code> (true/false)</li>
+            </ul>
+          </div>
+          <div class="i18n-block" data-i18n="yo">
+            <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
+              <li>Àwọn iye tí a pín pẹ̀lú àmì-ìdá (<code>|</code>) ni a pín sí àwọn mẹ́tẹ̀ẹ̀ta RDF ọ̀tọ̀ọ̀tọ̀</li>
+              <li>Àwọn orúkọ Yorùbá di <code>skos:prefLabel</code> pẹ̀lú àwọn àmì èdè <code>@yo</code></li>
+              <li>Gbogbo àwọn orúkọ ìbílẹ̀ mìíràn di <code>skos:altLabel</code> pẹ̀lú àwọn àmì èdè tí ó yẹ</li>
+              <li>Àwọn iye ọ̀rọ̀-ìsọ̀rí tí a ṣàkóso ni a so mọ́ URI èrò nínú àwọn ètò wọn</li>
+              <li>Àwọn iye "Bẹ́ẹ̀ni"/"Bẹ́ẹ̀kọ́" di <code>xsd:boolean</code> (òótọ́/irọ́)</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 1.5rem;">
+          <span data-i18n="en">RDF Output (Turtle)</span>
+          <span data-i18n="es">Salida RDF (Turtle)</span>
+          <span data-i18n="fr">Sortie RDF (Turtle)</span>
+          <span data-i18n="pt">Saída RDF (Turtle)</span>
+          <span data-i18n="yo">Èsì RDF (Turtle)</span>
+        </h3>
+        <pre><code>@prefix iroko: &lt;https://iroko-framework.github.io/iroko-ewe-module/terms/&gt; .
+@prefix dwc: &lt;http://rs.tdwg.org/dwc/terms/&gt; .
+@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;http://example.org/plant/0001&gt; a skos:Concept ;
+    dcterms:identifier "Plant0001" ;
+    dwc:scientificName "Milicia excelsa" ;
+
+    # Three separate prefLabel triples from pipe-delimited source
+    skos:prefLabel "Ìrókò"@yo ;
+    skos:prefLabel "Èrò ìrókò"@yo ;
+    skos:prefLabel "Iròkò èwọ̀"@yo ;
+    skos:prefLabel "Iròkò aládé oko"@yo ;
+
+    # Multiple altLabel triples with appropriate language tags
+    skos:altLabel "African Teak"@en ;
+    skos:altLabel "Iroko"@x-lucumi ;
+    skos:altLabel "La Ceiba"@es ;
+    skos:altLabel "God Tree"@en ;
+
+    # Controlled vocabulary string → concept URI mapping
+    iroko:accessLevel iroko:accessLevel/public-unrestricted ;
+    iroko:medicinalUse iroko:medicinalUse/respiratory-support ;
+
+    # Multiple ritual uses from pipe-delimited source
+    iroko:ritualUse iroko:ritualUse/cosmological-or-symbolic-association ;
+    iroko:ritualUse iroko:ritualUse/protection-and-boundary-setting ;
+
+    # "Yes" → true boolean
+    iroko:nameCollision true ;
+
+    # Free-text explanation of the collision
+    iroko:collisionNotes "Shares the vernacular name 'Iròkò' with Ceiba pentandra in some ritual and popular contexts; distinguished here by Verger attestation" .</code></pre>
+
+        <p style="color: var(--muted); margin-top: 0.75rem; font-size: 0.95rem;">
+          <span data-i18n="en"><strong>Result:</strong> What was 11 rows of pipe-delimited CSV data becomes 15 distinct RDF triples, each properly typed and language-tagged. The name collision flag and explanatory note demonstrate how the vocabulary handles taxonomic ambiguity across vernacular naming traditions. This transformation enables semantic queries, multilingual discovery, and standards-compliant linked data integration.</span>
+          <span data-i18n="es"><strong>Resultado:</strong> Lo que eran 11 filas de datos CSV delimitados por barras se convierte en 15 tripletas RDF distintas, cada una correctamente tipificada y etiquetada por idioma. El indicador de colisión de nombres y la nota explicativa demuestran cómo el vocabulario maneja la ambigüedad taxonómica en las tradiciones de nomenclatura vernácula. Esta transformación permite consultas semánticas, descubrimiento multilingüe e integración de datos enlazados conforme a estándares.</span>
+          <span data-i18n="fr"><strong>Résultat :</strong> Les 11 lignes de données CSV délimitées par des barres deviennent 15 triplets RDF distincts, chacun correctement typé et étiqueté par langue. L'indicateur de collision de noms et la note explicative démontrent comment le vocabulaire gère l'ambiguïté taxonomique à travers les traditions de dénomination vernaculaire. Cette transformation permet les requêtes sémantiques, la découverte multilingue et l'intégration de données liées conformes aux normes.</span>
+          <span data-i18n="pt"><strong>Resultado:</strong> O que eram 11 linhas de dados CSV delimitados por barras torna-se 15 triplas RDF distintas, cada uma corretamente tipificada e etiquetada por idioma. O sinalizador de colisão de nomes e a nota explicativa demonstram como o vocabulário lida com a ambiguidade taxonômica nas tradições de nomenclatura vernácula. Esta transformação permite consultas semânticas, descoberta multilíngue e integração de dados ligados em conformidade com padrões.</span>
+          <span data-i18n="yo"><strong>Àbájáde:</strong> Ohun tí ó jẹ́ ìlà 11 ti dátà CSV tí a pín pẹ̀lú àmì-ìdá di mẹ́tẹ̀ẹ̀ta RDF 15 ọ̀tọ̀ọ̀tọ̀, ọ̀kọ̀ọ̀kan pẹ̀lú irú àti àmì-èdè tí ó tọ́. Àmì ìkọlura orúkọ àti àkọsílẹ̀ àlàyé ṣàfihàn bí ọ̀rọ̀-ìsọ̀rí náà ṣe ń ṣàkóso àìdájú ìtòlẹ́sẹẹsẹ káàkiri àwọn àṣà ìsọ-orúkọ ìbílẹ̀. Ìyípadà yìí ń jẹ́ kí ìwádìí ìtumọ̀, ìṣàwárí èdè-púpọ̀, àti ìsopọ̀ dátà tí ó bá ìlànà mu ṣeéṣe.</span>
+        </p>
+      </section>
+
+      <!-- ═══════════════ WHO SHOULD USE ═══════════════ -->
+      <section id="use-cases">
+        <h2>
+          <span data-i18n="en">Who Should Use This Vocabulary</span>
+          <span data-i18n="es">Quién Debería Usar Este Vocabulario</span>
+          <span data-i18n="fr">Qui Devrait Utiliser Ce Vocabulaire</span>
+          <span data-i18n="pt">Quem Deve Usar Este Vocabulário</span>
+          <span data-i18n="yo">Ta Ni Ó Yẹ Kí Ó Lo Ọ̀rọ̀-ìsọ̀rí Yìí</span>
+        </h2>
+
+        <div class="i18n-block" data-i18n="en">
+          <ul class="list">
+            <li><strong>Ethnobotanists</strong> documenting traditional plant knowledge with appropriate cultural protocols</li>
+            <li><strong>Digital archivists</strong> working with Indigenous and Afro-diasporic cultural materials</li>
+            <li><strong>Library metadata specialists</strong> cataloging ethnographic collections and sacred materials</li>
+            <li><strong>Academic researchers</strong> studying Yoruba, Lucumí, or broader Afro-Atlantic religious traditions</li>
+            <li><strong>Data scientists</strong> building ethical knowledge graphs that respect community sovereignty</li>
+            <li><strong>Museum professionals</strong> managing collections with culturally sensitive access requirements</li>
+            <li><strong>Community knowledge keepers</strong> seeking frameworks for digital stewardship with graduated disclosure</li>
+          </ul>
+        </div>
+        <div class="i18n-block" data-i18n="es">
+          <ul class="list">
+            <li><strong>Etnobotánicos</strong> que documentan conocimiento tradicional de plantas con protocolos culturales apropiados</li>
+            <li><strong>Archivistas digitales</strong> que trabajan con materiales culturales indígenas y afrodiaspóricos</li>
+            <li><strong>Especialistas en metadatos bibliotecarios</strong> que catalogan colecciones etnográficas y materiales sagrados</li>
+            <li><strong>Investigadores académicos</strong> que estudian tradiciones religiosas yoruba, lucumí o afroatlánticas más amplias</li>
+            <li><strong>Científicos de datos</strong> que construyen grafos de conocimiento éticos que respetan la soberanía comunitaria</li>
+            <li><strong>Profesionales de museos</strong> que gestionan colecciones con requisitos de acceso culturalmente sensibles</li>
+            <li><strong>Guardianes del conocimiento comunitario</strong> que buscan marcos para la custodia digital con divulgación graduada</li>
+          </ul>
+        </div>
+        <div class="i18n-block" data-i18n="fr">
+          <ul class="list">
+            <li><strong>Ethnobotanistes</strong> documentant les connaissances traditionnelles des plantes avec les protocoles culturels appropriés</li>
+            <li><strong>Archivistes numériques</strong> travaillant avec des matériaux culturels autochtones et afro-diasporiques</li>
+            <li><strong>Spécialistes des métadonnées en bibliothèque</strong> cataloguant des collections ethnographiques et des matériaux sacrés</li>
+            <li><strong>Chercheurs académiques</strong> étudiant les traditions religieuses yoruba, lucumí ou afro-atlantiques plus larges</li>
+            <li><strong>Scientifiques des données</strong> construisant des graphes de connaissances éthiques respectant la souveraineté communautaire</li>
+            <li><strong>Professionnels des musées</strong> gérant des collections avec des exigences d'accès culturellement sensibles</li>
+            <li><strong>Gardiens des connaissances communautaires</strong> cherchant des cadres de gestion numérique avec divulgation graduée</li>
+          </ul>
+        </div>
+        <div class="i18n-block" data-i18n="pt">
+          <ul class="list">
+            <li><strong>Etnobotânicos</strong> documentando conhecimento tradicional de plantas com protocolos culturais apropriados</li>
+            <li><strong>Arquivistas digitais</strong> trabalhando com materiais culturais indígenas e afro-diaspóricos</li>
+            <li><strong>Especialistas em metadados de bibliotecas</strong> catalogando coleções etnográficas e materiais sagrados</li>
+            <li><strong>Pesquisadores acadêmicos</strong> estudando tradições religiosas iorubá, lucumí ou afro-atlânticas mais amplas</li>
+            <li><strong>Cientistas de dados</strong> construindo grafos de conhecimento éticos que respeitam a soberania comunitária</li>
+            <li><strong>Profissionais de museus</strong> gerenciando coleções com requisitos de acesso culturalmente sensíveis</li>
+            <li><strong>Guardiões do conhecimento comunitário</strong> buscando estruturas para gestão digital com divulgação graduada</li>
+          </ul>
+        </div>
+        <div class="i18n-block" data-i18n="yo">
+          <ul class="list">
+            <li><strong>Àwọn onímọ̀ ewé-ìbílẹ̀</strong> tí wọ́n ń ṣe àkọsílẹ̀ ìmọ̀ ewé àṣà pẹ̀lú àwọn ìlànà àṣà tí ó yẹ</li>
+            <li><strong>Àwọn olùtọ́jú-ìwé dígítà</strong> tí wọ́n ń ṣiṣẹ́ pẹ̀lú àwọn ohun-èlò àṣà ọmọ ìbílẹ̀ àti Áfíríkà-ìtànkálẹ̀</li>
+            <li><strong>Àwọn amọ̀jà mẹ́tádátà ilé-ìkàwé</strong> tí wọ́n ń ṣe ìtòlẹ́sẹẹsẹ àwọn àkójọ ẹ̀yà-ìran àti ohun-èlò mímọ́</li>
+            <li><strong>Àwọn olùṣèwádìí ilé-ẹ̀kọ́</strong> tí wọ́n ń kẹ́kọ̀ọ́ àwọn àṣà ẹ̀sìn Yorùbá, Lucumí, tàbí Àfíríkà-Àtìláńtíìkì ní gbòòrò</li>
+            <li><strong>Àwọn onímọ̀ sáyẹ́nsì dátà</strong> tí wọ́n ń kọ́ àwọn gíráfù ìmọ̀ tí ó ní ìwà rere tí ó bọ̀wọ̀ fún ọlá-àkóso àwùjọ</li>
+            <li><strong>Àwọn akọ́ṣẹ́mọṣẹ́ ilé-ẹ̀kọ́ musiọ́mù</strong> tí wọ́n ń ṣàkóso àwọn àkójọ pẹ̀lú àwọn ìbéèrè àṣẹ-wọlé tí ó ní ìtọ́jú àṣà</li>
+            <li><strong>Àwọn olùtọ́jú ìmọ̀ àwùjọ</strong> tí wọ́n ń wá àwọn ìlànà fún ìṣàkóso dígítà pẹ̀lú ìfihàn ìpele-ìpele</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ═══════════════ RESOURCES ═══════════════ -->
+      <section id="resources">
+        <h2>
+          <span data-i18n="en">Resources</span>
+          <span data-i18n="es">Recursos</span>
+          <span data-i18n="fr">Ressources</span>
+          <span data-i18n="pt">Recursos</span>
+          <span data-i18n="yo">Àwọn Ohun Èlò</span>
+        </h2>
+        <div class="info-grid">
+          <div class="card">
+            <h4>
+              <span data-i18n="en">Documentation</span>
+              <span data-i18n="es">Documentación</span>
+              <span data-i18n="fr">Documentation</span>
+              <span data-i18n="pt">Documentação</span>
+              <span data-i18n="yo">Ìwé Àlàyé</span>
+            </h4>
+            <p><a href="https://github.com/iroko-framework/iroko-ewe-module/blob/main/README.md">
+              <span data-i18n="en">Full README on GitHub</span>
+              <span data-i18n="es">README completo en GitHub</span>
+              <span data-i18n="fr">README complet sur GitHub</span>
+              <span data-i18n="pt">README completo no GitHub</span>
+              <span data-i18n="yo">README kíkún lórí GitHub</span>
+            </a></p>
+          </div>
+          <div class="card">
+            <h4>
+              <span data-i18n="en">Vocabulary File</span>
+              <span data-i18n="es">Archivo de Vocabulario</span>
+              <span data-i18n="fr">Fichier de Vocabulaire</span>
+              <span data-i18n="pt">Arquivo de Vocabulário</span>
+              <span data-i18n="yo">Fáìlì Ọ̀rọ̀-ìsọ̀rí</span>
+            </h4>
+            <p><a href="vocab/iroko-ewe-module.ttl">iroko-ewe-module.ttl</a> (Turtle/RDF format)</p>
+          </div>
+          <div class="card">
+            <h4>
+              <span data-i18n="en">GitHub Repository</span>
+              <span data-i18n="es">Repositorio GitHub</span>
+              <span data-i18n="fr">Dépôt GitHub</span>
+              <span data-i18n="pt">Repositório GitHub</span>
+              <span data-i18n="yo">Ibi Ìpamọ́ GitHub</span>
+            </h4>
+            <p><a href="https://github.com/iroko-framework/iroko-ewe-module">iroko-ewe-module</a></p>
+          </div>
+          <div class="card">
+            <h4>
+              <span data-i18n="en">CARE Principles</span>
+              <span data-i18n="es">Principios CARE</span>
+              <span data-i18n="fr">Principes CARE</span>
+              <span data-i18n="pt">Princípios CARE</span>
+              <span data-i18n="yo">Àwọn Ìlànà CARE</span>
+            </h4>
+            <p><a href="https://www.gida-global.org/care">Global Indigenous Data Alliance</a></p>
+          </div>
+          <div class="card">
+            <h4>Iroko Historical Society</h4>
+            <p><a href="https://www.irokosociety.org">
+              <span data-i18n="en">Main website and archives</span>
+              <span data-i18n="es">Sitio web principal y archivos</span>
+              <span data-i18n="fr">Site web principal et archives</span>
+              <span data-i18n="pt">Site principal e arquivos</span>
+              <span data-i18n="yo">Ojú-ẹ̀rọ̀ àkọ́kọ́ àti àwọn ilé-ìpamọ́</span>
+            </a></p>
+          </div>
+          <div class="card">
+            <h4>
+              <span data-i18n="en">Contact</span>
+              <span data-i18n="es">Contacto</span>
+              <span data-i18n="fr">Contact</span>
+              <span data-i18n="pt">Contato</span>
+              <span data-i18n="yo">Kànsí</span>
+            </h4>
+            <p><a href="mailto:info@irokosociety.org">info@irokosociety.org</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ CITATION ═══════════════ -->
+      <section id="citation">
+        <h2>
+          <span data-i18n="en">Citation</span>
+          <span data-i18n="es">Citación</span>
+          <span data-i18n="fr">Citation</span>
+          <span data-i18n="pt">Citação</span>
+          <span data-i18n="yo">Ìtọ́kasí</span>
+        </h2>
+        <p>
+          <span data-i18n="en">If you use this vocabulary in your research or projects, please cite:</span>
+          <span data-i18n="es">Si utiliza este vocabulario en su investigación o proyectos, por favor cite:</span>
+          <span data-i18n="fr">Si vous utilisez ce vocabulaire dans vos recherches ou projets, veuillez citer :</span>
+          <span data-i18n="pt">Se você usar este vocabulário em sua pesquisa ou projetos, por favor cite:</span>
+          <span data-i18n="yo">Tí o bá lo ọ̀rọ̀-ìsọ̀rí yìí nínú ìwádìí tàbí iṣẹ́ rẹ, jọ̀wọ́ tọ́ka sí:</span>
+        </p>
+        <pre><code>Iroko Historical Society. (2026). Iroko Framework: Ewé Module (Version 0.2.1).
+https://iroko-framework.github.io/iroko-ewe-module/</code></pre>
+      </section>
+
+      <!-- ═══════════════ FUTURE DEVELOPMENT ═══════════════ -->
+      <section id="future">
+        <h2>
+          <span data-i18n="en">Future Development</span>
+          <span data-i18n="es">Desarrollo Futuro</span>
+          <span data-i18n="fr">Développement Futur</span>
+          <span data-i18n="pt">Desenvolvimento Futuro</span>
+          <span data-i18n="yo">Ìdàgbàsókè Ọjọ́ Iwájú</span>
+        </h2>
+        <p>
+          <span data-i18n="en">The Iroko Framework will expand to include additional modules for comprehensive representation of Afro-Atlantic spiritual and botanical knowledge systems:</span>
+          <span data-i18n="es">El Iroko Framework se expandirá para incluir módulos adicionales para una representación integral de los sistemas de conocimiento espiritual y botánico afroatlántico:</span>
+          <span data-i18n="fr">Le Iroko Framework s'étendra pour inclure des modules supplémentaires pour une représentation complète des systèmes de connaissances spirituelles et botaniques afro-atlantiques :</span>
+          <span data-i18n="pt">O Iroko Framework se expandirá para incluir módulos adicionais para representação abrangente dos sistemas de conhecimento espiritual e botânico afro-atlântico:</span>
+          <span data-i18n="yo">Iroko Framework yóò gbòòrò láti fi àwọn mọ́dúùlù àfikún sínú fún àpèjúwe kíkún àwọn ètò ìmọ̀ ẹ̀mí àti ewé Àfíríkà-Àtìláńtíìkì:</span>
+        </p>
+
+        <h4 style="margin-top: 1.5rem;">
+          <span data-i18n="en">Planned Modules</span>
+          <span data-i18n="es">Módulos Planificados</span>
+          <span data-i18n="fr">Modules Prévus</span>
+          <span data-i18n="pt">Módulos Planejados</span>
+          <span data-i18n="yo">Àwọn Mọ́dúùlù Tí A Gbèrò</span>
+        </h4>
+
+        <div class="i18n-block" data-i18n="en">
+          <ul class="list">
+            <li><strong>Iroko Framework: Òrìṣà</strong> — Vocabulary for spiritual entities, attributes, and relationships within Yoruba-derived traditions</li>
+            <li><strong>Iroko Framework: Odù</strong> — Vocabulary for divination signs, literary corpus, and hermeneutical frameworks</li>
+            <li><strong>Iroko Framework: Oṣó</strong> — Vocabulary for medicinal formulations with appropriate clinical and ethical guardrails</li>
+            <li><strong>Iroko Framework: Ebó</strong> — Vocabulary for ritual workings, ceremonial structures, and spiritual technologies</li>
+          </ul>
+        </div>
+        <div class="i18n-block" data-i18n="es">
+          <ul class="list">
+            <li><strong>Iroko Framework: Òrìṣà</strong> — Vocabulario para entidades espirituales, atributos y relaciones dentro de tradiciones derivadas del yoruba</li>
+            <li><strong>Iroko Framework: Odù</strong> — Vocabulario para signos de adivinación, corpus literario y marcos hermenéuticos</li>
+            <li><strong>Iroko Framework: Oṣó</strong> — Vocabulario para formulaciones medicinales con protecciones clínicas y éticas apropiadas</li>
+            <li><strong>Iroko Framework: Ebó</strong> — Vocabulario para trabajos rituales, estructuras ceremoniales y tecnologías espirituales</li>
+          </ul>
+        </div>
+        <div class="i18n-block" data-i18n="fr">
+          <ul class="list">
+            <li><strong>Iroko Framework: Òrìṣà</strong> — Vocabulaire pour les entités spirituelles, les attributs et les relations au sein des traditions dérivées du yoruba</li>
+            <li><strong>Iroko Framework: Odù</strong> — Vocabulaire pour les signes de divination, le corpus littéraire et les cadres herméneutiques</li>
+            <li><strong>Iroko Framework: Oṣó</strong> — Vocabulaire pour les formulations médicinales avec les protections cliniques et éthiques appropriées</li>
+            <li><strong>Iroko Framework: Ebó</strong> — Vocabulaire pour les travaux rituels, les structures cérémonielles et les technologies spirituelles</li>
+          </ul>
+        </div>
+        <div class="i18n-block" data-i18n="pt">
+          <ul class="list">
+            <li><strong>Iroko Framework: Òrìṣà</strong> — Vocabulário para entidades espirituais, atributos e relações dentro de tradições derivadas do iorubá</li>
+            <li><strong>Iroko Framework: Odù</strong> — Vocabulário para sinais de adivinhação, corpus literário e estruturas hermenêuticas</li>
+            <li><strong>Iroko Framework: Oṣó</strong> — Vocabulário para formulações medicinais com proteções clínicas e éticas apropriadas</li>
+            <li><strong>Iroko Framework: Ebó</strong> — Vocabulário para trabalhos rituais, estruturas cerimoniais e tecnologias espirituais</li>
+          </ul>
+        </div>
+        <div class="i18n-block" data-i18n="yo">
+          <ul class="list">
+            <li><strong>Iroko Framework: Òrìṣà</strong> — Ọ̀rọ̀-ìsọ̀rí fún àwọn ẹ̀mí, àwọn àbùdá, àti àwọn ìbáṣepọ̀ nínú àwọn àṣà tí ó wá láti Yorùbá</li>
+            <li><strong>Iroko Framework: Odù</strong> — Ọ̀rọ̀-ìsọ̀rí fún àwọn àmì Ifá, àkójọ ìwé, àti àwọn ìlànà ìtumọ̀</li>
+            <li><strong>Iroko Framework: Oṣó</strong> — Ọ̀rọ̀-ìsọ̀rí fún àwọn àdàpọ̀ oògùn pẹ̀lú ààbò ìṣègùn àti ìwà rere tí ó yẹ</li>
+            <li><strong>Iroko Framework: Ebó</strong> — Ọ̀rọ̀-ìsọ̀rí fún àwọn iṣẹ́ ìṣẹ̀sín, àwọn ètò ayẹyẹ, àti àwọn ìmọ̀-ẹ̀rọ ẹ̀mí</li>
+          </ul>
+        </div>
+
+        <h4 style="margin-top: 1.5rem;">
+          <span data-i18n="en">V0.3.0 Expansion (In Development)</span>
+          <span data-i18n="es">Expansión V0.3.0 (En Desarrollo)</span>
+          <span data-i18n="fr">Expansion V0.3.0 (En Développement)</span>
+          <span data-i18n="pt">Expansão V0.3.0 (Em Desenvolvimento)</span>
+          <span data-i18n="yo">Ìgbòòrò V0.3.0 (Nínú Ìdàgbàsókè)</span>
+        </h4>
+        <p style="color: var(--muted);">
+          <span data-i18n="en">The next major release will introduce expanded properties for ecological context, morphological characteristics, traditional preparation guidance (non-operational), provenance tracking, knowledge holder attribution, and geographic distribution patterns. These additions will support more sophisticated ethnobotanical research while maintaining the framework's commitment to non-operational, community-centered design.</span>
+          <span data-i18n="es">La próxima versión principal introducirá propiedades ampliadas para contexto ecológico, características morfológicas, guía de preparación tradicional (no operacional), rastreo de procedencia, atribución de poseedores de conocimiento y patrones de distribución geográfica. Estas adiciones apoyarán investigación etnobotánica más sofisticada manteniendo el compromiso del marco con un diseño no operacional y centrado en la comunidad.</span>
+          <span data-i18n="fr">La prochaine version majeure introduira des propriétés élargies pour le contexte écologique, les caractéristiques morphologiques, les conseils de préparation traditionnelle (non opérationnels), le suivi de provenance, l'attribution des détenteurs de connaissances et les schémas de distribution géographique. Ces ajouts soutiendront une recherche ethnobotanique plus sophistiquée tout en maintenant l'engagement du cadre envers une conception non opérationnelle et centrée sur la communauté.</span>
+          <span data-i18n="pt">A próxima versão principal introduzirá propriedades expandidas para contexto ecológico, características morfológicas, orientação de preparação tradicional (não operacional), rastreamento de proveniência, atribuição de detentores de conhecimento e padrões de distribuição geográfica. Essas adições apoiarão pesquisa etnobotânica mais sofisticada mantendo o compromisso do framework com design não operacional e centrado na comunidade.</span>
+          <span data-i18n="yo">Ẹ̀dà pàtàkì tí ó ń bọ̀ yóò mú àwọn ohun ìní tí a fẹ̀ sí i fún ọ̀rọ̀ àyíká, àwọn ìhùwàsí àpẹ̀jọ, ìtọ́ni lórí ìpèsè àṣà (tí kò ṣiṣẹ́), ìtọpinpin orísun, ìfọwọ́sí olùtọ́jú ìmọ̀, àti àwọn àpẹẹrẹ ìtànkálẹ̀ àgbègbè. Àwọn àfikún wọ̀nyí yóò ṣe àtìlẹ́yìn fún ìwádìí ewé-ìbílẹ̀ tí ó jìnlẹ̀ síi nígbà tí ó ń pa ìfaramọ́ ìlànà náà mọ́ sí àpèjúwe tí kò ṣiṣẹ́, tí àwùjọ sì wà ní àárín.</span>
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p><strong>Iroko Historical Society</strong></p>
+      <p>
+        <span data-i18n="en">Postcustodial Digital Archives for Afro-Atlantic Cultural Materials</span>
+        <span data-i18n="es">Archivos Digitales Postcustodiales para Materiales Culturales Afroatlánticos</span>
+        <span data-i18n="fr">Archives Numériques Postcustodiales pour les Matériaux Culturels Afro-Atlantiques</span>
+        <span data-i18n="pt">Arquivos Digitais Pós-custodiais para Materiais Culturais Afro-Atlânticos</span>
+        <span data-i18n="yo">Àwọn Ilé-Ìpamọ́ Dígítà Lẹ́yìn-Ìtọ́jú fún Àwọn Ohun-Èlò Àṣà Àfíríkà-Àtìláńtíìkì</span>
+      </p>
+      <p style="margin-top: 0.5rem;"><a href="https://www.irokosociety.org">irokosociety.org</a></p>
+      <p style="margin-top: 1rem; font-size: 0.85rem;">
+        <span data-i18n="en">Licensed under <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0</a></span>
+        <span data-i18n="es">Licenciado bajo <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Atribución 4.0</a></span>
+        <span data-i18n="fr">Sous licence <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0</a></span>
+        <span data-i18n="pt">Licenciado sob <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Atribuição 4.0</a></span>
+        <span data-i18n="yo">Lábẹ́ ìwé-àṣẹ <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Ìfọwọ́sí 4.0</a></span>
+      </p>
+    </footer>
+  </div>
+
+  <!-- ═══════════════ LANGUAGE TOGGLE JS ═══════════════ -->
+  <script>
+    function setLang(lang) {
+      document.body.setAttribute('data-lang', lang);
+      document.documentElement.setAttribute('lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-langbtn') === lang);
+      });
+      // Persist choice
+      try { localStorage.setItem('iroko-lang', lang); } catch(e) {}
+    }
+
+    // Restore saved preference
+    (function() {
+      try {
+        var saved = localStorage.getItem('iroko-lang');
+        if (saved && ['en','es','fr','pt','yo'].indexOf(saved) !== -1) {
+          setLang(saved);
+        }
+      } catch(e) {}
+    })();
+  </script>
+</body>
+</html>
